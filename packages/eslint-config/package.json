@@ -4,6 +4,7 @@
   "type": "module",
   "private": true,
   "exports": {
+    "./node":"./node.js",
     "./base": "./base.js",
     "./next-js": "./next.js",
     "./react-internal": "./react-internal.js"

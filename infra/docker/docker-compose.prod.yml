@@ -1,0 +1,26 @@
+services:
+  api:
+    build:
+      context: ../..            # repo root — file lives at infra/docker/, so up two levels
+      dockerfile: apps/api/Dockerfile
+      target: prod
+    container_name: testportal-api-prod
+    env_file:
+      - ../../apps/api/.env
+    ports:
+      - "3000:3000"
+    restart: always
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/health', r => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"]
+      interval: 30s
+      timeout: 3s
+      start_period: 5s
+      retries: 3
+    networks:
+      - testportal-network
+    # No volumes here on purpose — prod runs exactly what was
+    # baked into the image at build time, nothing from host
+
+networks:
+  testportal-network:
+    driver: bridge

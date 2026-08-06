@@ -36,3 +36,21 @@ yarn-error.log*
 # Misc
 .DS_Store
 *.pem
+# TypeScript
+*.tsbuildinfo
+
+# Prisma
+prisma/migrations/dev.db
+*.db
+*.db-journal
+
+# IDE
+.vscode/
+.idea/
+
+# Logs (you only cover npm/yarn, missing pnpm and generic)
+pnpm-debug.log*
+*.log
+
+# OS (you have .DS_Store, missing Windows equivalent)
+Thumbs.db

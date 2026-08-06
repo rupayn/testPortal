@@ -1,0 +1,19 @@
+{
+  "name": "@repo/logger",
+  "version": "0.0.0",
+  "license": "MIT",
+  "type": "module",
+  "private": true,
+  "main": "index.ts",
+  "exports": {
+    "./config": "./src/index.ts"
+  },
+  "dependencies": {
+    "morgan": "^1.11.0",
+    "winston": "^3.19.0"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:^",
+    "@types/morgan": "^1.9.10"
+  }
+}
