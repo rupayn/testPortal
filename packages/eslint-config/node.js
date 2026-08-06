@@ -16,10 +16,23 @@ import globals from "globals";
  *
  * NOTE: `config` is a function, not a flat array. It must be called with
  * the calling app's own directory (import.meta.dirname) so that
- * `tsconfigRootDir` is always resolved relative to that app — not to
- * `process.cwd()`, which changes depending on where the lint command is
- * invoked from (e.g. monorepo root vs. the app folder) and would otherwise
- * cause `tsconfig.eslint.json` to fail to resolve.
+ * tsconfigRootDir is always resolved relative to that app — not to
+ * process.cwd(), which changes depending on where the lint command is
+ * invoked from.
+ *
+ * NOTE ON TYPE-AWARE LINTING: this uses the classic `parserOptions.project`
+ * array (NOT `projectService`). `projectService`'s defaultProject /
+ * allowDefaultProject fallback is only meant for a handful of loose files
+ * (like root config files) — allowDefaultProject deliberately forbids deep
+ * globs (`**`), so it can never cover an entire src/ or test/ directory.
+ * The classic `project` option has no such restriction: it just needs a
+ * tsconfig whose own `include` covers the files being linted.
+ *
+ * Each consuming package must add its own tsconfig.eslint.json:
+ *   { "extends": "./tsconfig.json", "include": ["src", "test"], "exclude": ["node_modules", "dist"] }
+ * This lets the real tsconfig.json stay narrow (e.g. only "src", for build
+ * purposes) while tsconfig.eslint.json widens coverage to also include
+ * test/ for linting.
  */
 export const config = (tsconfigRootDir) => [
   // Ignore build artifacts / deps everywhere
@@ -51,55 +64,15 @@ export const config = (tsconfigRootDir) => [
         ...globals.node,
       },
       parserOptions: {
-        // Required for type-aware rules (strictTypeChecked / stylisticTypeChecked).
-        // defaultProject points at a package-local tsconfig.eslint.json, which
-        // extends the package's real tsconfig.json but widens `include` to
-        // also cover files outside `src` (e.g. `test`) that the build
-        // tsconfig deliberately excludes from `dist`. Each consuming package
-        // must add its own tsconfig.eslint.json:
-        //   { "extends": "./tsconfig.json", "include": ["src", "test"], "exclude": ["node_modules", "dist"] }
-        // allowDefaultProject covers any remaining stray root-level config
-        // files (e.g. tailwind.config.js) that aren't part of that project either.
-        //
-        // NOTE: allowDefaultProject only accepts shallow globs (no `**`),
-        // so it must never be used for whole source/test directories.
-        // Files under src/ and test/ are picked up via each package's
-        // tsconfig.eslint.json `include` instead (which recurses into
-        // nested folders automatically).
-        projectService: {
-          allowDefaultProject: [
-            "*.config.js",
-            "*.config.mjs",
-            "*.config.cjs",
-            "*.config.ts",
-            "*.config.mts",
-            "*.config.cts",
-          ],
-          defaultProject: "tsconfig.eslint.json",
-        },
-        // Resolved relative to the calling app's own directory, passed in
-        // by that app's eslint.config.mjs — NOT process.cwd(), which is
-        // unreliable in a monorepo (depends on where the lint command runs).
+        // Classic type-aware linting: points directly at the app's
+        // tsconfig.eslint.json, whose `include` covers both src/ and
+        // test/. Any file not covered by this project (or by the
+        // disableTypeChecked override below) will still error — that's
+        // expected; add it to tsconfig.eslint.json's `include` instead.
+        project: ["./tsconfig.eslint.json"],
         tsconfigRootDir,
       },
     },
-  },
-
-  // Config files aren't part of the app's TS project and don't need
-  // type-aware linting — plain JS/TS rules are enough for them.
-  {
-    files: [
-      "**/*.config.js",
-      "**/*.config.mjs",
-      "**/*.config.cjs",
-      "**/*.config.ts",
-      "**/*.config.mts",
-      "**/*.config.cts",
-      "eslint.config.js",
-      "eslint.config.mjs",
-      "eslint.config.cjs",
-    ],
-    ...tseslint.configs.disableTypeChecked,
   },
 
   {
@@ -174,6 +147,33 @@ export const config = (tsconfigRootDir) => [
       // demotes everything not explicitly errored above anyway) ----
       "@typescript-eslint/no-unused-expressions": "warn",
     },
+  },
+
+  // Config files aren't part of the app's TS project and don't need
+  // type-aware linting — plain JS/TS rules are enough for them.
+  //
+  // IMPORTANT: this block is placed LAST (after the unscoped rules block
+  // above), because in ESLint flat config, later entries override earlier
+  // ones for the same matched file. Putting this before the big rules
+  // block (as it was previously) meant the unscoped block's typed rules
+  // silently re-enabled themselves for *.config.ts files, since that block
+  // has no `files` restriction and therefore applies to every file,
+  // including config files — causing a crash on files like
+  // vitest.config.ts ("rule requires type information, but don't have
+  // parserOptions set to generate type information for this file").
+  {
+    files: [
+      "**/*.config.js",
+      "**/*.config.mjs",
+      "**/*.config.cjs",
+      "**/*.config.ts",
+      "**/*.config.mts",
+      "**/*.config.cts",
+      "eslint.config.js",
+      "eslint.config.mjs",
+      "eslint.config.cjs",
+    ],
+    ...tseslint.configs.disableTypeChecked,
   },
 
   eslintConfigPrettier,
