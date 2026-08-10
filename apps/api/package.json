@@ -26,8 +26,10 @@
   "dependencies": {
     "@repo/db": "workspace:^",
     "@repo/logger": "workspace:^",
+    "@repo/schemas": "workspace:^",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "maxmind": "^5.0.7",
     "supertest": "^7.2.2",
     "zod": "^4.4.3"
   }
