@@ -3,7 +3,13 @@
   "ui": "tui",
   "globalEnv":[
     "PORT",
-    "NODE_ENV"
+    "NODE_ENV",
+    "CLOUDFLARE_S3_TOKEN",
+    "CLOUDFLARE_S3_ACCESS_KEY_ID",
+    "CLOUDFLARE_S3_SECRET_ACCESS_KEY",
+    "CLOUDFLARE_S3_R2_BUCKET",
+    "CLOUDFLARE_R2_ACCOUNT_ID",
+    "DATABASE_URL"
   ],
   "tasks": {
     "build": {

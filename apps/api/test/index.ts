@@ -1,1 +1,1 @@
-export const ase="as";
+export const ase = "as";

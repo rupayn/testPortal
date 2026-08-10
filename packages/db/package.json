@@ -8,6 +8,11 @@
   "exports": {
     "./config": "./src/index.ts"
   },
+  "scripts": {
+    "seed":"tsx prisma/seed.ts",
+    "generate": "prisma generate",
+    "migrate": "prisma migrate dev"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -22,6 +27,7 @@
   "dependencies": {
     "@prisma/adapter-pg": "^7.9.1",
     "@prisma/client": "^7.9.1",
+    "@repo/logger": "workspace:^",
     "dotenv": "^17.4.2",
     "pg": "^8.22.0"
   }
