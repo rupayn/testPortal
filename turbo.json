@@ -9,7 +9,8 @@
     "CLOUDFLARE_S3_SECRET_ACCESS_KEY",
     "CLOUDFLARE_S3_R2_BUCKET",
     "CLOUDFLARE_R2_ACCOUNT_ID",
-    "DATABASE_URL"
+    "DATABASE_URL",
+    "R2_GEOIP_OBJECT_KEY"
   ],
   "tasks": {
     "build": {

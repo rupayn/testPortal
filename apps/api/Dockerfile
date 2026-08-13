@@ -3,7 +3,7 @@
 # =========================================================
 # Base: shared setup for all stages
 # =========================================================
-FROM node:20-alpine AS base
+FROM node:24-alpine  AS base
 RUN corepack enable && corepack prepare pnpm@9.0.0 --activate
 WORKDIR /app
 
@@ -65,7 +65,7 @@ RUN pnpm turbo run build --filter=api
 # Prod: minimal final image. No dev dependencies, no source,
 # no build tools — just the compiled output + prod deps.
 # =========================================================
-FROM node:20-alpine AS prod
+FROM node:24-alpine  AS prod
 ENV NODE_ENV=production
 WORKDIR /app
 
