@@ -2,7 +2,7 @@ services:
   api:
     build:
       context: ../..            # repo root — file lives at infra/docker/, so up two levels
-      dockerfile: apps/api/Dockerfile
+      dockerfile: apps/api/Dockerfile.dev
       target: dev
     container_name: testportal-api-dev
     env_file:

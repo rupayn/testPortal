@@ -8,7 +8,9 @@ import { Readable } from "stream";
 
 const FILE_NAME = "GeoLite2-City.mmdb";
 const DATA_DIR =
-  envs.NODE_ENV === "production" ? "/data/geoip" : path.resolve(process.cwd(), "src/data");
+  envs.NODE_ENV === "production"
+    ? path.resolve(process.cwd(), "data/geoip")
+    : path.resolve(process.cwd(), "src/data");
 
 const DATABASE_PATH = path.join(DATA_DIR, FILE_NAME);
 const TEMP_DATABASE_PATH = `${DATABASE_PATH}.tmp`;
