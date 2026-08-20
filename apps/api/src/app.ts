@@ -11,12 +11,12 @@ app.use(express.json());
 app.use(httpLogger);
 
 app.get("/", (req, res) => {
-  const userIp =envs.NODE_ENV==="production"? getClientIp(req):"8.8.8.8";
+  const userIp = envs.NODE_ENV === "production" ? getClientIp(req) : "8.8.8.8";
   if (userIp == null) {
     res.json({
       success: true,
       userIp,
-      msg:"Address not found",
+      msg: "Address not found",
       nn: 58,
     });
     return;

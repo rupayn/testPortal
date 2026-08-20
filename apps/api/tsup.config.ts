@@ -7,11 +7,7 @@ export default defineConfig({
   target: "node20",
   clean: true,
   sourcemap: true,
-  noExternal: [
-    "@repo/db",
-    "@repo/logger",
-    "@repo/schemas",
-  ],
+  noExternal: ["@repo/db", "@repo/logger", "@repo/schemas"],
 
   splitting: false,
   dts: false,

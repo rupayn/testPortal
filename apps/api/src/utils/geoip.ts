@@ -60,5 +60,4 @@ export async function ensureGeoLiteDatabase() {
     logger.error("Failed to download GeoLite database", err);
     throw err;
   }
-
 }

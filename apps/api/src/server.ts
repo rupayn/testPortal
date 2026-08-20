@@ -11,14 +11,13 @@ const server = http.createServer(app);
 async function startServer() {
   try {
     const dbPath = await ensureGeoLiteDatabase();
-     
+
     initializeGeoIp(dbPath);
     server.listen(envs.PORT, () => {
       logger.info(`Server running at http://localhost:${envs.PORT.toString()}`);
     });
-    
   } catch (error) {
-    logger.error(error)
+    logger.error(error);
   }
 }
 

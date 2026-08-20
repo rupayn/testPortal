@@ -3,7 +3,7 @@ import { envs } from "./dotenv";
 
 export const r2Client = new S3Client({
   region: "auto",
-  endpoint: `https://${envs.CLOUDFLARE_R2_ACCOUNT_ID}.r2.cloudflarestorage.com`, 
+  endpoint: `https://${envs.CLOUDFLARE_R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
   credentials: {
     accessKeyId: envs.CLOUDFLARE_S3_ACCESS_KEY_ID,
     secretAccessKey: envs.CLOUDFLARE_S3_SECRET_ACCESS_KEY,

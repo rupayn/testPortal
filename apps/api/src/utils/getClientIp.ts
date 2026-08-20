@@ -5,7 +5,7 @@ export function getClientIp(req: Request): string | null {
   const realIp = req.get("x-real-ip");
   const forwardedFor = req.get("x-forwarded-for");
 
-  if (cfConnectingIp!==""&& cfConnectingIp!==undefined) {
+  if (cfConnectingIp !== "" && cfConnectingIp !== undefined) {
     return cfConnectingIp.trim();
   }
 
