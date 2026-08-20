@@ -1,5 +1,5 @@
 import morgan from "morgan";
-import { logger, configureLogger } from "./logger.ts";
+import { logger } from "./logger.ts";
 
 const morganFormat = ":method :url :status :response-time ms";
 
@@ -18,4 +18,4 @@ const httpLogger = morgan(morganFormat, {
   },
 });
 
-export { httpLogger, logger, configureLogger };
+export { httpLogger, logger };

@@ -66,16 +66,14 @@ ENV NODE_ENV=production
 
 WORKDIR /app
 
-# Alpine uses addgroup/adduser instead of Debian's
-# groupadd/useradd commands.
 RUN addgroup -S -g 1001 nodejs \
-    && adduser -S -u 1001 -G nodejs nodejs
+    && adduser -S -u 1001 -G nodejs nodejs \
+    && mkdir -p /app/data/geoip \
+    && chown -R nodejs:nodejs /app
 
-# API build
 COPY --from=builder --chown=nodejs:nodejs \
     /app/apps/api/dist ./dist
 
-# Production dependency tree
 COPY --from=deploy --chown=nodejs:nodejs \
     /app/deploy/node_modules ./node_modules
 

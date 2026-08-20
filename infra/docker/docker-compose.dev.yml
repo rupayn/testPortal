@@ -1,3 +1,4 @@
+name: testportal-dev
 services:
   api:
     build:

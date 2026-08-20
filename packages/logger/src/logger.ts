@@ -3,33 +3,38 @@ import { createLogger, format, transports } from "winston";
 const { combine, timestamp, json, colorize, printf, errors } = format;
 
 const isDev = process.env.NODE_ENV !== "production";
-const logLevel = process.env.LOG_LEVEL ?? (isDev ? "debug" : "info");
 
-// Console: human-readable, colorized, no timestamp clutter
 const consoleFormat = combine(
   colorize(),
   printf(({ level, message }) => `${level}: ${message}`)
 );
 
-// File: structured JSON, no color codes, includes timestamp + stack traces
 const fileFormat = combine(timestamp(), errors({ stack: true }), json());
 
 export const logger = createLogger({
-  level: logLevel,
-  format: fileFormat,
+  // Logger must allow INFO so the file can receive it.
+  level: isDev ? "debug" : "info",
+
   transports: isDev
-    ? [new transports.Console({ format: consoleFormat })]
+    ? [
+        // Development: everything
+        new transports.Console({
+          level: "debug",
+          format: consoleFormat,
+        }),
+      ]
     : [
-        new transports.File({ filename: "app.log", format: fileFormat }),
-        new transports.Console({ format: fileFormat }),
+        // Production: INFO + WARN + ERROR
+        new transports.File({
+          filename: "app.log",
+          level: "info",
+          format: fileFormat,
+        }),
+
+        // Production: WARN + ERROR only
+        new transports.Console({
+          level: "warn",
+          format: fileFormat,
+        }),
       ],
 });
-
-export function configureLogger() {
-  const isDevRuntime = process.env.NODE_ENV !== "production";
-  logger.transports.forEach((t) => {
-    if (t instanceof transports.Console) {
-      t.level = isDevRuntime ? "debug" : "warn";
-    }
-  });
-}
