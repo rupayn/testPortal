@@ -22,7 +22,7 @@ FROM base AS pruner
 
 COPY . .
 
-RUN pnpm turbo prune api --docker
+RUN pnpm dlx turbo prune api --docker
 
 
 # ─────────────────────────────────────
