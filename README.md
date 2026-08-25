@@ -118,3 +118,35 @@ turbo link
 - [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
 - [Configuration Options](https://turborepo.dev/docs/reference/configuration)
 - [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+
+
+##
+Arm Build:
+```sh
+docker buildx build \
+  --platform linux/arm64 \
+  -f apps/api/Dockerfile \
+  --target production \
+  -t testportal-prod-api:armlatest \
+  --load \
+  .
+```
+## normal build:
+```
+docker build \       
+  -f apps/api/Dockerfile \
+  --target production \
+  -t testportal-prod-api:latest \
+  .
+```
+
+## Run command:
+
+```
+docker run \         
+  --name testportal-debug \
+  --env-file .env \         
+  -p 3000:3000 \
+  testportal-prod-api:latest
+
+```

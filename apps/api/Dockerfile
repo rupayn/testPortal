@@ -5,12 +5,14 @@ ARG NODE_VERSION=24.13.1
 # ─────────────────────────────────────
 # Base
 # ─────────────────────────────────────
+
 FROM node:${NODE_VERSION}-slim AS base
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 
-RUN corepack enable
+RUN corepack enable \
+    && corepack prepare pnpm@9.0.0 --activate
 
 WORKDIR /app
 
@@ -18,16 +20,18 @@ WORKDIR /app
 # ─────────────────────────────────────
 # Prune
 # ─────────────────────────────────────
+
 FROM base AS pruner
 
 COPY . .
 
-RUN pnpm dlx turbo prune api --docker
+RUN pnpm dlx turbo@2.10.8 prune api --docker
 
 
 # ─────────────────────────────────────
 # Dependencies + Build
 # ─────────────────────────────────────
+
 FROM base AS builder
 
 COPY --from=pruner /app/out/json/ .
@@ -35,19 +39,17 @@ COPY --from=pruner /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
 
 RUN pnpm install --frozen-lockfile
 
-# Copy the actual source
 COPY --from=pruner /app/out/full/ .
 
-# Generate Prisma client
 RUN pnpm --filter @repo/db exec prisma generate
 
-# Build API
 RUN pnpm turbo run build --filter=api
 
 
 # ─────────────────────────────────────
 # Production deployment
 # ─────────────────────────────────────
+
 FROM builder AS deploy
 
 RUN pnpm deploy \
@@ -60,6 +62,7 @@ RUN pnpm deploy \
 # ─────────────────────────────────────
 # Production
 # ─────────────────────────────────────
+
 FROM node:${NODE_VERSION}-alpine AS production
 
 ENV NODE_ENV=production
