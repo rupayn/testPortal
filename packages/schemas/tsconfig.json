@@ -1,6 +1,8 @@
 {
   "extends":"@repo/typescript-config/base.json",
   "compilerOptions": {
-    "strict": true
+    "strict": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true
   }
 }

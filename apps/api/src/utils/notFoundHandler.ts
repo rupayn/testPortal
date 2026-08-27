@@ -1,6 +1,23 @@
-import type { Request, Response, NextFunction } from "express";
-import { ApiError } from "./appError";
+import type { Context } from "hono";
+import { logger } from "@repo/logger/config";
 
-export function notFoundHandler(req: Request, _res: Response, next: NextFunction): void {
-  next(new ApiError(`Route not found: ${req.originalUrl}`, 404));
-}
+export const notFoundHandler = (c: Context) => {
+  logger.warn(
+    {
+      method: c.req.method,
+      path: c.req.path,
+    },
+    "Route not found"
+  );
+
+  return c.json(
+    {
+      success: false,
+      error: {
+        code: "NOT_FOUND",
+        message: "Route not found",
+      },
+    },
+    404
+  );
+};

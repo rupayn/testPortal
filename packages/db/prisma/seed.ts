@@ -5,10 +5,9 @@ async function main() {
   logger.info("Seeding database...");
   await prismaSingleton.user.upsert({
     where: {
-      email: "abcd@a.com"
+      email: "abcd@a.com",
     },
     update: {
-      
       name: "John Doe",
       password: "password",
     },

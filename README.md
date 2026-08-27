@@ -119,9 +119,10 @@ turbo link
 - [Configuration Options](https://turborepo.dev/docs/reference/configuration)
 - [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
 
-
 ##
+
 Arm Build:
+
 ```sh
 docker buildx build \
   --platform linux/arm64 \
@@ -131,9 +132,11 @@ docker buildx build \
   --load \
   .
 ```
+
 ## normal build:
+
 ```
-docker build \       
+docker build \
   -f apps/api/Dockerfile \
   --target production \
   -t testportal-prod-api:latest \
@@ -143,9 +146,9 @@ docker build \
 ## Run command:
 
 ```
-docker run \         
+docker run \
   --name testportal-debug \
-  --env-file .env \         
+  --env-file .env \
   -p 3000:3000 \
   testportal-prod-api:latest
 

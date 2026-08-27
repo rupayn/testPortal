@@ -1,21 +1,27 @@
-import type { Request, Response } from "express";
-
-import type { SignInInput } from "@repo/schemas";
-import { sendApiResponse } from "../../utils/apiResponse";
+import { ApiError } from "../../utils/apiError";
+import { ErrorCodeEnums } from "@repo/schemas";
 import { prismaSingleton } from "@repo/db/config";
+import { successResponse } from "../../utils/apiResponse";
+import type { RouteHandler } from "@hono/zod-openapi";
+import type { signinRoute } from "../../routes/user/auth/signin";
 
-export const siginController = async function (req: Request, res: Response): Promise<void> {
-  const { email, password } = req.body as SignInInput;
+export const signinController: RouteHandler<typeof signinRoute> = async (c) => {
+  const { email, password } = c.req.valid("json");
 
-  const user = await prismaSingleton.user.findFirst({ where: { email } });
+  const user = await prismaSingleton.user.findUnique({
+    where: { email },
+    include: {
+      posts: true,
+    },
+  });
 
   if (user == null) {
-    sendApiResponse(res, 400, "User not found");
-    return;
+    throw new ApiError(401, "Invalid credentials", ErrorCodeEnums.USER_NOT_FOUND);
   }
+
   if (user.password !== password) {
-    sendApiResponse(res, 400, "Invalid password");
-    return;
+    throw new ApiError(401, "Invalid credentials", ErrorCodeEnums.USER_NOT_FOUND);
   }
-  sendApiResponse(res, 201, "Login successfully", { email });
+
+  return successResponse(c, "Login successfully", { user }, 200);
 };

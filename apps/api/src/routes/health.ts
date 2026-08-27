@@ -1,11 +1,18 @@
-import { Router, type Router as RouterType } from "express";
+import { createRoute } from "@hono/zod-openapi";
+import { healthResponseSchema } from "@repo/schemas";
 
-const router: RouterType = Router();
+export const healthRoute = createRoute({
+  method: "get",
+  path: "/health",
 
-router.get("/health", (_req, res) => {
-  res.status(200).json({
-    status: "ok",
-  });
+  responses: {
+    200: {
+      description: "Health check",
+      content: {
+        "application/json": {
+          schema: healthResponseSchema,
+        },
+      },
+    },
+  },
 });
-
-export default router;

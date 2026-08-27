@@ -1,23 +1,41 @@
-import type { Response } from "express";
+import type { Context } from "hono";
+import type { ErrorStatusCode } from "./apiError";
+import type { ErrorCode } from "@repo/schemas";
 
-export class ApiResponse<T = unknown> {
-  public readonly success: boolean;
-  public readonly statusCode: number;
-  public readonly message: string;
-  public readonly data: T;
-  constructor(statusCode: number, data: T, message = "Success") {
-    this.success = statusCode < 400;
-    this.statusCode = statusCode;
-    this.message = message;
-    this.data = data;
-  }
-}
+type JsonSuccessStatusCode = 200 | 201 | 202;
 
-export function sendApiResponse(
-  res: Response,
-  statusCode: number,
+export const successResponse = <T, S extends JsonSuccessStatusCode = 200>(
+  c: Context,
   message = "Success",
-  data?: unknown
-): void {
-  res.status(statusCode).json(new ApiResponse(statusCode, data, message));
-}
+  data: T,
+  status: S = 200 as S
+) => {
+  return c.json(
+    {
+      success: true,
+      message,
+      data,
+    },
+    status
+  );
+};
+export const errorResponse = <T>(
+  c: Context,
+  status: ErrorStatusCode,
+  code: ErrorCode,
+  message = "Failed",
+  issues?: T
+) => {
+  return c.json(
+    {
+      success: false,
+      message,
+      error: {
+        code,
+        message,
+        ...(issues !== undefined ? { issues } : {}),
+      },
+    },
+    status
+  );
+};

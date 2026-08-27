@@ -1,25 +1,24 @@
-import type { Request } from "express";
+import type { Context } from "hono";
 
-export function getClientIp(req: Request): string | null {
-  const cfConnectingIp = req.get("cf-connecting-ip");
-  const realIp = req.get("x-real-ip");
-  const forwardedFor = req.get("x-forwarded-for");
+export function getClientIp(c: Context): string | null {
+  const headers = c.req.raw.headers;
 
-  if (cfConnectingIp !== "" && cfConnectingIp !== undefined) {
+  const cfConnectingIp = headers.get("cf-connecting-ip");
+  if (cfConnectingIp !== null && cfConnectingIp.trim() !== "") {
     return cfConnectingIp.trim();
   }
-
-  if (realIp !== undefined && realIp !== "") {
+  const realIp = headers.get("x-real-ip");
+  if (realIp !== null && realIp.trim() !== "") {
     return realIp.trim();
   }
-
-  if (forwardedFor !== undefined && forwardedFor !== "") {
-    const firstIp = forwardedFor.split(",")[0];
+  const forwardedFor = headers.get("x-forwarded-for");
+  if (forwardedFor !== null && forwardedFor.trim() !== "") {
+    const firstIp = forwardedFor.split(",")[0]?.trim();
 
     if (firstIp !== undefined && firstIp !== "") {
-      return firstIp.trim();
+      return firstIp;
     }
   }
 
-  return req.socket.remoteAddress ?? null;
+  return null;
 }
