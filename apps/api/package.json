@@ -8,6 +8,7 @@
     "build": "tsup",
     "dev": "tsx watch src/server.ts",
     "start": "node dist/server.mjs",
+    "format:check": "prettier --check \"**/*.{ts,tsx,md}\"",
     "lint": "eslint src/ --max-warnings 0",
     "check-types": "tsc --noEmit"
   },
@@ -19,6 +20,7 @@
     "@repo/typescript-config": "workspace:^",
     "@types/node": "^22.15.3",
     "@types/supertest": "^7.2.1",
+    "prettier": "^3.9.6",
     "tsup": "^8.5.1",
     "tsx": "^4.23.1",
     "vitest": "^4.1.10"
