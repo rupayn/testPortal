@@ -7,8 +7,11 @@
     "lint": "turbo run lint",
     "seed":"turbo run seed",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",
-    "docker":"docker compose -f ./infra/docker/docker-compose.dev.yml up"
+    "docker":"docker compose -f ./infra/docker/docker-compose.dev.yml up",
+    "check": "pnpm format:check && turbo run lint check-types",
+    "push-git":"node ./scripts/git-push.js"
   },
   "devDependencies": {
     "prettier": "^3.9.6",

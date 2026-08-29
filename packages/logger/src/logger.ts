@@ -1,35 +1,37 @@
-import { createLogger, format, transports } from "winston";
+import pino from "pino";
 
-const { combine, timestamp, json, colorize, printf, errors } = format;
+const isProduction = process.env.NODE_ENV === "production";
 
-const isDev = process.env.NODE_ENV !== "production";
-const logLevel = process.env.LOG_LEVEL ?? (isDev ? "debug" : "info");
+export const logger = pino({
+  level: isProduction ? "info" : "trace",
+  timestamp: pino.stdTimeFunctions.isoTime,
+  formatters: {
+    level: (label) => ({
+      level: label,
+    }),
+  },
+  ...(isProduction
+    ? {}
+    : {
+        transport: {
+          target: "pino-pretty",
+          options: {
+            colorize: true,
+            translateTime: "SYS:standard",
+          },
+        },
+      }),
 
-// Console: human-readable, colorized, no timestamp clutter
-const consoleFormat = combine(
-  colorize(),
-  printf(({ level, message }) => `${level}: ${message}`)
-);
-
-// File: structured JSON, no color codes, includes timestamp + stack traces
-const fileFormat = combine(timestamp(), errors({ stack: true }), json());
-
-export const logger = createLogger({
-  level: logLevel,
-  format: fileFormat,
-  transports: isDev
-    ? [new transports.Console({ format: consoleFormat })]
-    : [
-        new transports.File({ filename: "app.log", format: fileFormat }),
-        new transports.Console({ format: fileFormat }),
-      ],
+  redact: {
+    paths: [
+      "password",
+      "token",
+      "accessToken",
+      "refreshToken",
+      "authorization",
+      "req.headers.authorization",
+      "req.headers.cookie",
+    ],
+    censor: "[REDACTED]",
+  },
 });
-
-export function configureLogger() {
-  const isDevRuntime = process.env.NODE_ENV !== "production";
-  logger.transports.forEach((t) => {
-    if (t instanceof transports.Console) {
-      t.level = isDevRuntime ? "debug" : "warn";
-    }
-  });
-}

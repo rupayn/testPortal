@@ -1,10 +1,37 @@
-import { Router, type Router as RouterType } from "express";
-import { validate } from "../../../middleware/validate";
-import { signInSchema } from "@repo/schemas";
-import { siginController } from "../../../controller/auth/signin";
-import { asyncHandler } from "../../../utils/asyncHandler";
+import { createRoute } from "@hono/zod-openapi";
+import { genericErrorResponseSchema, signInOutputSchema, signInInputSchema } from "@repo/schemas";
+import { successResponse200 } from "../../Responses/successResponse";
+import {
+  errorResponse500,
+  genericErrorResponse,
+  validationErrorResponse,
+} from "../../Responses/errorResponse";
 
-const router: RouterType = Router();
-router.post("/signin", validate(signInSchema), asyncHandler(siginController));
+export const signinRoute = createRoute({
+  method: "post",
+  path: "/auth/signin",
+  request: {
+    body: {
+      content: {
+        "application/json": {
+          schema: signInInputSchema,
+        },
+      },
+    },
+  },
+  responses: {
+    ...successResponse200("Signin successfully", signInOutputSchema),
+    ...validationErrorResponse(),
+    ...errorResponse500(),
+    ...genericErrorResponse(401, genericErrorResponseSchema, "Unauthorized"),
 
-export default router;
+    // 200: {
+    //   description:"Signin successfully",
+    //   content: {
+    //     "application/json": {
+    //       schema: signInOutputSchema,
+    //     },
+    //   },
+    // },
+  },
+});

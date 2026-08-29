@@ -54,3 +54,5 @@ pnpm-debug.log*
 
 # OS (you have .DS_Store, missing Windows equivalent)
 Thumbs.db
+*.mmdb
+.vscode

@@ -1,0 +1,50 @@
+# syntax=docker/dockerfile:1.7
+
+# =========================================================
+# Base: shared setup for all stages
+# =========================================================
+FROM node:24-alpine  AS base
+RUN corepack enable && corepack prepare pnpm@9.0.0 --activate
+WORKDIR /app
+
+# =========================================================
+# Pruner: uses turbo to extract ONLY the files needed for
+# apps/api (its own source + any internal workspace deps it
+# actually uses — e.g. packages/db once it's added). Avoids
+# copying the entire monorepo into every image and keeps
+# layer caching precise.
+#
+# NOTE: turbo prune only picks up packages/db automatically
+# once apps/api/package.json lists it as a real dependency,
+# e.g. "@repo/db": "workspace:*". Nothing to change here
+# when that happens — this stage handles it automatically.
+# =========================================================
+FROM base AS pruner
+COPY . .
+RUN pnpm dlx turbo prune api --docker
+
+# =========================================================
+# Deps: install dependencies using the pruned lockfile.
+# This layer only invalidates when deps actually change,
+# not when app source code changes.
+# =========================================================
+FROM base AS deps
+COPY --from=pruner /app/out/json/ .
+COPY --from=pruner /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+RUN pnpm install --frozen-lockfile
+
+# =========================================================
+# Dev: fast iteration, hot reload via tsx watch.
+# Source code is bind-mounted via docker-compose.dev.yml,
+# NOT baked in here — that's what makes dev fast.
+#
+# Uses `turbo run dev --filter=api` (not plain `pnpm dev`)
+# so that workspace dependencies like packages/db are picked
+# up correctly per turbo.json's dependency graph — important
+# once apps/api imports from packages/db.
+# =========================================================
+FROM deps AS dev
+COPY --from=pruner /app/out/full/ .
+WORKDIR /app
+EXPOSE 3000
+CMD ["pnpm", "turbo", "run", "dev", "--filter=api"]
