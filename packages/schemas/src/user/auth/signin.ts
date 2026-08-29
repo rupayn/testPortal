@@ -11,15 +11,24 @@ export const postSchema = z.object({
 export const userSchema = z.object({
   id: z.number(),
   email: z.email({ message: "Invalid email address" }).trim().toLowerCase().max(254).min(5),
-
   password: z.string().min(1, { message: "Password is required" }).max(72),
   name: z.string().nullable(),
 
   posts: z.array(postSchema),
 });
 export const signInInputSchema = z.object({
-  email: z.email({ message: "Invalid email address" }).trim().toLowerCase().max(254).min(5),
-  password: z.string().min(1, { message: "Password is required" }).max(72),
+  email: z
+    .email({ message: "Invalid email address" })
+    .trim()
+    .toLowerCase()
+    .max(254)
+    .min(5)
+    .meta({ examples: ["abcd@a.com"] }),
+  password: z
+    .string()
+    .min(1, { message: "Password is required" })
+    .max(72)
+    .meta({ examples: ["password"] }),
 });
 
 export const signInOutputSchema = z.object({
@@ -35,10 +44,10 @@ export const signUpSchema = z.object({
   password: passwordSchema,
 });
 
-export const signInSchema = z.object({
-  email: emailSchema,
-  password: z.string().min(1, { message: "Password is required" }).max(72),
-});
+// export const signInSchema = z.object({
+//   email: emailSchema,
+//   password: z.string().min(1, { message: "Password is required" }).max(72),
+// });
 
 // ────────────────────────────────
 // User schemas

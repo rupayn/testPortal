@@ -10,7 +10,7 @@ services:
     container_name: testportal-api-prod
 
     env_file:
-      - ../../apps/api/.env
+      - ../../.env
 
     # environment:
     #   DATABASE_URL: "postgresql://postgres:postgres@db:5432/testportal_dev"

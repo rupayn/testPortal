@@ -1,5 +1,11 @@
 import { createRoute } from "@hono/zod-openapi";
-import { signInOutputSchema, signInSchema } from "@repo/schemas";
+import { genericErrorResponseSchema, signInOutputSchema, signInInputSchema } from "@repo/schemas";
+import { successResponse200 } from "../../Responses/successResponse";
+import {
+  errorResponse500,
+  genericErrorResponse,
+  validationErrorResponse,
+} from "../../Responses/errorResponse";
 
 export const signinRoute = createRoute({
   method: "post",
@@ -8,19 +14,24 @@ export const signinRoute = createRoute({
     body: {
       content: {
         "application/json": {
-          schema: signInSchema,
+          schema: signInInputSchema,
         },
       },
     },
   },
   responses: {
-    200: {
-      description: "Signin successfully",
-      content: {
-        "application/json": {
-          schema: signInOutputSchema,
-        },
-      },
-    },
+    ...successResponse200("Signin successfully", signInOutputSchema),
+    ...validationErrorResponse(),
+    ...errorResponse500(),
+    ...genericErrorResponse(401, genericErrorResponseSchema, "Unauthorized"),
+
+    // 200: {
+    //   description:"Signin successfully",
+    //   content: {
+    //     "application/json": {
+    //       schema: signInOutputSchema,
+    //     },
+    //   },
+    // },
   },
 });

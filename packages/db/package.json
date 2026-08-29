@@ -11,7 +11,8 @@
   "scripts": {
     "seed":"tsx prisma/seed.ts",
     "generate": "prisma generate",
-    "migrate": "prisma migrate dev"
+    "migrate": "prisma migrate dev",
+    "check-types": "tsc --noEmit"
   },
   "keywords": [],
   "author": "",

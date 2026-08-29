@@ -57,7 +57,7 @@ export async function ensureGeoLiteDatabase() {
   } catch (err) {
     // clean up partial download so it doesn't get mistaken for a valid file next run
     await fs.promises.rm(TEMP_DATABASE_PATH, { force: true });
-    logger.error("Failed to download GeoLite database", err);
+    logger.error(err, "Failed to download GeoLite database");
     throw err;
   }
 }
