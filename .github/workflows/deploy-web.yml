@@ -17,12 +17,11 @@ jobs:
   deploy:
     name: Deploy Web
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0 # full history needed for turbo-ignore to diff correctly
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -39,7 +38,7 @@ jobs:
       - name: Check if web is affected
         id: check
         run: |
-          if pnpm turbo-ignore web; then
+          if pnpm dlx turbo-ignore web; then
             echo "affected=false" >> "$GITHUB_OUTPUT"
           else
             echo "affected=true" >> "$GITHUB_OUTPUT"
