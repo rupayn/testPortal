@@ -12,7 +12,7 @@
     "docker": "docker compose -f ./infra/docker/docker-compose.dev.yml up",
     "check-api": "turbo run format:check lint check-types --filter=api",
     "check-web": "turbo run format:check lint check-types --filter=web",
-    "push-git": "node ./scripts/git-push.js"
+    "git-push": "node ./scripts/git-push.js"
   },
   "devDependencies": {
     "@inquirer/prompts": "^8.7.0",

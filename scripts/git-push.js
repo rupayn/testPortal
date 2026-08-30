@@ -7,6 +7,14 @@ const run = (command) => {
   });
 };
 
+const hasGitChanges = () => {
+  const status = execSync("git status --porcelain", {
+    encoding: "utf8",
+  }).trim();
+
+  return status.length > 0;
+};
+
 const CHECK_CHOICES = [
   { name: "All (api + web)", value: "pnpm check-api && pnpm check-web" },
   { name: "API only", value: "pnpm check-api" },
@@ -16,12 +24,16 @@ const CHECK_CHOICES = [
 
 async function askYesNo(message) {
   while (true) {
-    const answer = await textInput({ message: `${message} (Y/n)` });
+    const answer = await textInput({
+      message: `${message} (Y/n)`,
+    });
+
     const normalized = answer.trim().toLowerCase();
 
     if (normalized === "" || normalized === "y") {
       return true;
     }
+
     if (normalized === "n") {
       return false;
     }
@@ -50,17 +62,29 @@ async function selectCheckChoice() {
 }
 
 try {
+  // Only continue with Git operations if there are changes.
+  if (!hasGitChanges()) {
+    console.log("\nNo Git changes detected. Nothing to commit or push.");
+    process.exit(0);
+  }
+
+  console.log("\nChanges detected.");
+
   const checkChoice = await selectCheckChoice();
 
   if (checkChoice) {
     console.log(`\nRunning: ${checkChoice}\n`);
+
     run(checkChoice);
+
     console.log("\nAll checks passed.");
   } else {
     console.log("\nSkipping checks.");
   }
 
-  const message = await textInput({ message: "Commit message:" });
+  const message = await textInput({
+    message: "Commit message:",
+  });
 
   if (!message.trim()) {
     console.error("Commit message cannot be empty.");
@@ -83,6 +107,7 @@ try {
     console.log("\nCancelled.");
     process.exit(0);
   }
+
   console.error("\n✗ Operation failed.");
   process.exit(1);
 }
