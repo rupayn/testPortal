@@ -15,7 +15,6 @@ concurrency:
 jobs:
   ci:
     name: CI
-
     runs-on: ubuntu-latest
 
     steps:
@@ -32,7 +31,9 @@ jobs:
           cache: pnpm
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm --filter @repo/db exec prisma generate
 
       - name: Check formatting
         run: pnpm format:check
