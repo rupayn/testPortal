@@ -22,7 +22,7 @@ function App() {
           </p>
         </div>
         <button type="button" className="counter" onClick={() => setCount((count) => count + 1)}>
-          Count is {count} check 2
+          Count is {count} check 22
         </button>
       </section>
 
