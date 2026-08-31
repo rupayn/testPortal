@@ -1,15 +1,36 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Routes, Route } from "react-router";
+import NotFound from "./Notfound";
+import Home from "./Home";
+import type { AppDispatch, RootState } from "@/redux/store";
+import useNetworkStatus from "./hooks/useNetworkStatus";
+import { setByValue } from "@/redux/features/theme.slice";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { cn } from "@/lib/utils";
 
 function App() {
-  const [count, setCount] = useState(0);
-
+  const dispatch = useDispatch<AppDispatch>();
+  const theme = useSelector((state: RootState) => state?.theme.value);
+  const isOnline = useNetworkStatus();
+  useEffect(() => {
+    const lightModeMediaQuery = window.matchMedia("(prefers-color-scheme: light)");
+    const darkModeMediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    if (lightModeMediaQuery.matches) {
+      dispatch(setByValue("light"));
+    } else if (darkModeMediaQuery.matches) {
+      dispatch(setByValue("dark"));
+    }
+  }, [dispatch]);
   return (
-    <>
-      <div className="w-full min-h-dvh flex items-center justify-center min-w-100 bg-blue-700">
-        <Button onClick={() => setCount((count) => count + 1)}>count is: {count}</Button>
-      </div>
-    </>
+    <div className={cn("min-h-dvh w-full", theme === "dark" && "dark")}>
+      {isOnline ? "" : "No network connection"}
+      <Routes>
+        <Route path="/" element={<Home />} />
+
+        {/* Global 404 */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </div>
   );
 }
 
