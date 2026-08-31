@@ -1,6 +1,4 @@
 import { useState } from "react";
-
-import "./App.css";
 import { Button } from "@/components/ui/button";
 
 function App() {
@@ -8,7 +6,7 @@ function App() {
 
   return (
     <>
-      <div className="w-full h-full min-h-100 flex items-center justify-center min-w-100 bg-yellow-900">
+      <div className="w-full min-h-dvh flex items-center justify-center min-w-100 bg-blue-700">
         <Button onClick={() => setCount((count) => count + 1)}>count is: {count}</Button>
       </div>
     </>
