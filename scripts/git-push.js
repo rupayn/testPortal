@@ -98,7 +98,7 @@ try {
   run(`git commit -m "${message.replace(/"/g, '\\"')}"`);
 
   console.log("\nPushing...");
-  // run("git push");
+  run("git push");
 
   console.log("\n✓ Successfully committed and pushed.");
 } catch (err) {
