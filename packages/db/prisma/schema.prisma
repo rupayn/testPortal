@@ -12,20 +12,550 @@ datasource db {
   provider = "postgresql"
 }
 
-model User { 
-  id    Int     @id @default(autoincrement()) 
-  email String  @unique
-  name  String?
-  password String
-  posts Post[]
-} 
+// ============================================================
+// USER
+// ============================================================
 
-model Post { 
-  id        Int     @id @default(autoincrement()) 
-  slug      String  @unique
-  title     String
-  content   String?
-  published Boolean @default(false) 
-  author    User    @relation(fields: [authorId], references: [id]) 
-  authorId  Int
-} 
+model User {
+  id             String   @id @default(uuid())
+  email          String   @unique
+  email_verified Boolean  @default(false)
+  password       String
+  name           String
+  dob            DateTime @db.Date
+
+  gender Gender
+  phone  PhoneNumber[]
+  status UserStatus    @default(ACTIVE)
+
+  qualification Json
+  employee      Employee?
+
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  sessions   Session[]
+  student    Student?
+}
+
+// ============================================================
+// PHONE NUMBER
+// ============================================================
+
+model PhoneNumber {
+  id      String @id @default(uuid())
+  user_id String
+
+  country_code String
+  phone        String
+  is_primary   Boolean @default(false)
+  is_verified  Boolean @default(false)
+
+  type PhoneType @default(MOBILE)
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([user_id])
+}
+
+// ============================================================
+// SESSIONS
+// ============================================================
+model Session {
+  id String @id @default(uuid())
+
+  user_id String
+  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  device_token  String?
+  ip_address    String
+  refresh_token String       @unique
+  user_agent    String
+  provider      AuthProvider
+
+  is_active  Boolean  @default(true)
+  expires_at DateTime
+
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  last_active DateTime @default(now())
+
+  @@index([user_id])
+}
+
+// ============================================================
+// SCHOOL
+// ============================================================
+
+model School {
+  id   String @id @default(uuid())
+  name String
+  slug String @unique
+
+  email   String[]
+  phone   String[]
+  address String
+
+  status SchoolStatus @default(ACTIVE)
+
+  employees      Employee[]
+  standards      Standard[]
+  academic_years AcademicYear[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+// ============================================================
+// ACADEMIC YEAR
+// ============================================================
+
+model AcademicYear {
+  id String @id @default(uuid())
+
+  school_id String
+  school    School @relation(fields: [school_id], references: [id], onDelete: Cascade)
+
+  name       String // e.g. "2025-2026"
+  start_date DateTime
+  end_date   DateTime
+  is_current Boolean  @default(false)
+
+  class_teacher_assignments   ClassTeacherAssignment[]
+  subject_teacher_assignments SubjectTeacherAssignment[]
+
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  students   Student[]
+
+  @@unique([school_id, name])
+  @@index([school_id])
+}
+
+// ============================================================
+// EMPLOYEE
+// ============================================================
+
+model Employee {
+  id            String @id @default(uuid())
+  employee_code String @unique
+
+  salary Salary?
+
+  joining_date DateTime
+
+  status      EmployeeStatus       @default(ACTIVE)
+  designation Designation
+  experience  EmployeeExperience[]
+
+  user_id String @unique
+  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  school_id String
+  school    School @relation(fields: [school_id], references: [id], onDelete: Cascade)
+
+  teacher Teacher?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([school_id])
+}
+
+// ============================================================
+// TEACHER
+// ============================================================
+
+model Teacher {
+  id String @id @default(uuid())
+
+  employee_id String   @unique
+  employee    Employee @relation(fields: [employee_id], references: [id], onDelete: Cascade)
+
+  class_teacher_assignments ClassTeacherAssignment[]
+  // Subjects/classes this teacher is assigned to.
+  subject_assignments       SubjectTeacherAssignment[]
+
+  created_at         DateTime         @default(now())
+  updated_at         DateTime         @updatedAt
+  graded_submissions ExamSubmission[]
+}
+
+// ============================================================
+//  STUDENT
+// ===========================================================
+
+model Student {
+  id String @id @default(uuid())
+
+  user_id String @unique
+  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  class_id String
+  class    Class  @relation(fields: [class_id], references: [id], onDelete: Cascade)
+
+  academic_year_id String
+  academic_year    AcademicYear @relation(fields: [academic_year_id], references: [id], onDelete: Cascade)
+
+  created_at       DateTime         @default(now())
+  updated_at       DateTime         @updatedAt
+  exam_submissions ExamSubmission[]
+}
+
+model EmployeeExperience {
+  id String @id @default(uuid())
+
+  employee_id String
+  employee    Employee @relation(fields: [employee_id], references: [id], onDelete: Cascade)
+
+  organization String
+  designation  String?
+  start_date   DateTime
+  end_date     DateTime?
+  description  String?
+
+  @@index([employee_id])
+}
+
+// ============================================================
+// STANDARD
+// ============================================================
+// Covers school grades (1-12) as well as degree programs
+// (bachelors/masters/phd), distinguished by `type`.
+model Standard {
+  id String @id @default(uuid())
+
+  name String
+  type StandardType
+
+  level          Int? // grade number, e.g. 1-12, used when type = SCHOOL
+  duration_years Int? // program length, e.g. 4, used for degree types
+
+  school_id String
+  school    School @relation(fields: [school_id], references: [id], onDelete: Cascade)
+
+  classes  Class[]
+  subjects StandardSubject[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+// ============================================================
+// CLASS / SECTION
+// ============================================================
+
+model Class {
+  id String @id @default(uuid())
+
+  standard_id String
+  standard    Standard @relation(fields: [standard_id], references: [id], onDelete: Cascade)
+
+  section String
+
+  class_teacher_assignments ClassTeacherAssignment[]
+  subject_assignments       SubjectTeacherAssignment[]
+
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  students   Student[]
+
+  @@unique([standard_id, section])
+}
+
+// =================================================================
+// CLASS TEACHER ASSIGNMENT (the "post", tracked per academic year)
+// =================================================================
+
+model ClassTeacherAssignment {
+  id String @id @default(uuid())
+
+  class_id String
+  class    Class  @relation(fields: [class_id], references: [id], onDelete: Cascade)
+
+  // subject_id String
+  // subject    Subject @relation(fields: [subject_id], references: [id], onDelete: Cascade)
+
+  teacher_id String
+  teacher    Teacher @relation(fields: [teacher_id], references: [id], onDelete: Restrict)
+
+  academic_year_id String
+  academic_year    AcademicYear @relation(fields: [academic_year_id], references: [id], onDelete: Cascade)
+
+  schedules Schedule[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@unique([class_id, academic_year_id]) // one class teacher per class per year
+  @@index([teacher_id])
+  @@index([academic_year_id])
+}
+
+// ============================================================
+// SUBJECT
+// ============================================================
+
+model Subject {
+  id String @id @default(uuid())
+
+  name String
+  code String @unique
+
+  standards StandardSubject[]
+
+  created_at              DateTime                 @default(now())
+  updated_at              DateTime                 @updatedAt
+}
+
+// ============================================================
+// STANDARD SUBJECT
+// ============================================================
+
+model StandardSubject {
+  id String @id @default(uuid())
+
+  standard_id String
+  standard    Standard @relation(fields: [standard_id], references: [id], onDelete: Cascade)
+
+  subject_id String
+  subject    Subject @relation(fields: [subject_id], references: [id], onDelete: Cascade)
+
+  teacher_assignments SubjectTeacherAssignment[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@unique([standard_id, subject_id])
+}
+
+// ============================================================
+// EXAM
+// ===========================================================
+
+model Exam {
+  id String @id @default(uuid())
+
+  title       String
+  description String?
+
+  assignment_id String                   @db.Uuid
+  assignment    SubjectTeacherAssignment @relation(fields: [assignment_id], references: [id], onDelete: Restrict)
+
+  questions Json
+
+  total_marks      Int
+  duration_minutes Int
+  status           ExamStatus @default(DRAFT)
+  scheduled_at     DateTime?
+
+  submissions ExamSubmission[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([assignment_id])
+}
+
+model ExamSubmission {
+  id String @id @default(uuid()) @db.Uuid
+
+  exam_id String @db.Uuid
+  exam    Exam   @relation(fields: [exam_id], references: [id], onDelete: Cascade)
+
+  student_id String  @db.Uuid
+  student    Student @relation(fields: [student_id], references: [id], onDelete: Cascade)
+
+  answers Json
+
+  score  Float?
+  status SubmissionStatus @default(SUBMITTED)
+
+  graded_by_teacher_id String?   @db.Uuid
+  graded_by            Teacher?  @relation(fields: [graded_by_teacher_id], references: [id], onDelete: SetNull)
+  graded_at            DateTime?
+
+  @@unique([exam_id, student_id]) // one submission per student per exam
+  @@index([exam_id])
+  @@index([student_id])
+}
+
+// ============================================================
+// SUBJECT TEACHER ASSIGNMENT
+// ============================================================
+// A subject can have more than one teacher, and this can change
+// year to year — academic_year_id is part of the identity, teacher_id
+// is NOT unique-constrained alone, so multiple teachers per subject
+// per year are allowed. The full tuple just can't repeat.
+
+model SubjectTeacherAssignment {
+  id String @id @default(uuid())
+
+  class_id String
+  class    Class  @relation(fields: [class_id], references: [id], onDelete: Cascade)
+
+  standard_subject_id String
+  standard_subject    StandardSubject @relation(fields: [standard_subject_id], references: [id], onDelete: Cascade)
+
+  teacher_id String
+  teacher    Teacher @relation(fields: [teacher_id], references: [id], onDelete: Restrict)
+
+  academic_year_id String
+  academic_year    AcademicYear @relation(fields: [academic_year_id], references: [id], onDelete: Cascade)
+
+  schedules Schedule[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  exams      Exam[]
+
+  @@unique([class_id, standard_subject_id, teacher_id, academic_year_id])
+  @@index([teacher_id])
+  @@index([academic_year_id])
+}
+
+// ============================================================
+// SCHEDULE
+// ============================================================
+
+model Schedule {
+  id String @id @default(uuid())
+
+  assignment_id String
+  assignment    SubjectTeacherAssignment @relation(fields: [assignment_id], references: [id], onDelete: Cascade)
+
+  day        WeekDay
+  start_time DateTime @db.Time()
+  end_time   DateTime @db.Time()
+
+  created_at               DateTime                @default(now())
+  updated_at               DateTime                @updatedAt
+  // NOTE: this unique constraint stops exact duplicate start times, but not
+  // overlapping ranges (e.g. 9:00-10:00 vs 9:30-10:30 for the same teacher).
+  // Prevent that either in application logic, or with a Postgres exclusion
+  // constraint added via raw migration SQL:
+  //
+  // CREATE EXTENSION IF NOT EXISTS btree_gist;
+  // ALTER TABLE "Schedule" ADD CONSTRAINT no_overlapping_schedules
+  // EXCLUDE USING gist (
+  //   assignment_id WITH =,
+  //   day WITH =,
+  //   tsrange(start_time, end_time) WITH &&
+  // );
+  classTeacherAssignment   ClassTeacherAssignment? @relation(fields: [classTeacherAssignmentId], references: [id])
+  classTeacherAssignmentId String?
+
+  @@unique([assignment_id, day, start_time])
+  @@index([assignment_id])
+  @@index([day])
+}
+
+// ============================================================
+// Finance
+// ============================================================
+
+model Salary {
+  id          String   @id @default(uuid())
+  employee_id String   @unique
+  employee    Employee @relation(fields: [employee_id], references: [id])
+
+  current_salary Decimal @db.Decimal(12, 2)
+  initial_salary Decimal @db.Decimal(12, 2)
+
+  hike Float
+
+  bank_name      String?
+  account_number String?
+  ifsc_code      String?
+  bank_branch    String?
+
+  upi_id String?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+// ============================================================
+// ENUMS
+// ============================================================
+
+enum PhoneType {
+  MOBILE
+  HOME
+  WORK
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  DELETED
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum WeekDay {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+enum Designation {
+  TEACHER
+  ACCOUNTANT
+  PRINCIPAL
+  ADMIN
+  CLERK
+  LIBRARIAN
+  OTHER
+}
+
+enum EmployeeStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  TERMINATED
+}
+
+enum SchoolStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum StandardType {
+  SCHOOL // grades 1-12, use `level`
+  BACHELORS // use `duration_years`
+  MASTERS // use `duration_years`
+  PHD
+}
+
+enum AuthProvider {
+  GOOGLE
+  FACEBOOK
+  LINKEDIN
+  GITHUB
+  EMAIL
+}
+
+enum ExamStatus {
+  DRAFT
+  PUBLISHED
+  ONGOING
+  COMPLETED
+  ARCHIVED
+}
+
+enum SubmissionStatus {
+  SUBMITTED
+  GRADED
+}
