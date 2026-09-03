@@ -4,7 +4,17 @@ on:
   push:
     branches:
       - main
-
+    paths:
+      - "apps/web/**"
+      - "packages/**"
+      - "turbo.json"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - "tsconfig.json"
+      - "tsconfig.base.json"
+      - ".npmrc"
+      - ".github/workflows/deploy-web.yml"
 permissions:
   contents: read
   deployments: write

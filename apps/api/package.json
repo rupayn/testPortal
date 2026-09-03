@@ -35,6 +35,7 @@
     "@repo/logger": "workspace:^",
     "@repo/schemas": "workspace:^",
     "@scalar/hono-api-reference": "^0.11.16",
+    "bcryptjs": "^3.0.3",
     "dotenv": "^17.4.2",
     "hono": "^4.13.3",
     "zod": "^4.4.3"
