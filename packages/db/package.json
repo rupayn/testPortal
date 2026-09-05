@@ -9,7 +9,7 @@
     "./config": "./src/index.ts"
   },
   "scripts": {
-    "seed":"tsx prisma/seed.ts",
+    "seed": "tsx prisma/seed.ts",
     "generate": "prisma generate",
     "migrate": "prisma migrate dev",
     "check-types": "tsc --noEmit"
@@ -29,6 +29,7 @@
     "@prisma/adapter-pg": "^7.9.1",
     "@prisma/client": "^7.9.1",
     "@repo/logger": "workspace:^",
+    "@repo/miscellaneous": "workspace:^",
     "dotenv": "^17.4.2",
     "pg": "^8.22.0"
   }
