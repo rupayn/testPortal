@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import app from "../src/app";
-describe("POST /auth/signin", () => {
-  it("should signin with valid credentials", async () => {
+import app from "../../src/app";
+describe("POST /auth/signup checking for singup functionality", () => {
+  it("should signup with valid credentials", async () => {
     const response = await app.request("/api/health", {
       method: "GET",
     });

@@ -33,6 +33,7 @@
     "@maxmind/geoip2-node": "^7.1.0",
     "@repo/db": "workspace:^",
     "@repo/logger": "workspace:^",
+    "@repo/miscellaneous": "workspace:^",
     "@repo/schemas": "workspace:^",
     "@scalar/hono-api-reference": "^0.11.16",
     "dotenv": "^17.4.2",

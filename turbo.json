@@ -12,7 +12,9 @@
     "DATABASE_URL",
     "R2_GEOIP_OBJECT_KEY",
     "CLOUDFLARE_PAGES_ACCOUNT_ID",
-    "CLOUDFLARE_PAGES_API_TOKEN"
+    "CLOUDFLARE_PAGES_API_TOKEN",
+    "JWT_SECRET",
+    "JWT_EXPIRES_IN"
   ],
   "tasks": {
     "build": {

@@ -199,8 +199,11 @@ model Student {
   academic_year_id String       @db.Uuid
   academic_year    AcademicYear @relation(fields: [academic_year_id], references: [id], onDelete: Cascade)
 
+  status StudentStatus @default(ACTIVE)
+
   created_at       DateTime         @default(now())
   updated_at       DateTime         @updatedAt
+
   exam_submissions ExamSubmission[]
 }
 
@@ -558,4 +561,10 @@ enum ExamStatus {
 enum SubmissionStatus {
   SUBMITTED
   GRADED
+}
+enum StudentStatus {
+  ACTIVE
+  GRADUATED
+  TRANSFERRED
+  INACTIVE
 }

@@ -7,6 +7,8 @@ interface Env {
   CLOUDFLARE_S3_R2_BUCKET: string;
   CLOUDFLARE_R2_ACCOUNT_ID: string;
   R2_GEOIP_OBJECT_KEY: string;
+  JWT_SECRET: string;
+  JWT_EXPIRES_IN: string;
 }
 export const envs: Env = {
   PORT: Number(process.env.PORT ?? "3001"),
@@ -17,4 +19,6 @@ export const envs: Env = {
   CLOUDFLARE_S3_R2_BUCKET: process.env.CLOUDFLARE_S3_R2_BUCKET ?? "",
   CLOUDFLARE_S3_SECRET_ACCESS_KEY: process.env.CLOUDFLARE_S3_SECRET_ACCESS_KEY ?? "",
   R2_GEOIP_OBJECT_KEY: process.env.R2_GEOIP_OBJECT_KEY ?? "GeoLite2-City.mmdb",
+  JWT_SECRET: process.env.JWT_SECRET ?? "secret",
+  JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN ?? "1d",
 };

@@ -62,7 +62,6 @@ const app = new OpenAPIHono({
 app.use("*", cors());
 
 if (envs.NODE_ENV !== "production") {
-  logger.warn("Running in development mode");
   app.use(httpLogger);
 }
 
