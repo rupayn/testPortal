@@ -1,11 +1,11 @@
 import { createRoute } from "@hono/zod-openapi";
 import { genericErrorResponseSchema, signInOutputSchema, signInInputSchema } from "@repo/schemas";
-import { successResponse200 } from "../../../utils/Responses/successResponse";
+import { successResponse200 } from "../../../../utils/Responses/successResponse";
 import {
   errorResponse500,
   genericErrorResponse,
   validationErrorResponse,
-} from "../../../utils/Responses/errorResponse";
+} from "../../../../utils/Responses/errorResponse";
 
 export const signinRoute = createRoute({
   method: "post",

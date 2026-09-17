@@ -1,9 +1,9 @@
-import { ApiError } from "../../../utils/apiError";
+import { ApiError } from "../../../../utils/apiError";
 import { ErrorCodeEnums } from "@repo/schemas";
 import { prismaSingleton } from "@repo/db/config";
-import { successResponse } from "../../../utils/apiResponse";
+import { successResponse } from "../../../../utils/apiResponse";
 import type { RouteHandler } from "@hono/zod-openapi";
-import type { signinRoute } from "../../../modules/auth/signin/signin.route";
+import type { signinRoute } from "./signin.route";
 import { logger } from "@repo/logger/config";
 import { verifyPassword } from "@repo/miscellaneous/backend";
 
