@@ -29,12 +29,15 @@ model User {
   status UserStatus    @default(ACTIVE)
 
   qualification Json
+
+  owned_school School[] @relation("SchoolOwner")
   employee      Employee?
 
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
   sessions   Session[]
   student    Student?
+
 }
 
 // ============================================================
@@ -93,6 +96,9 @@ model School {
   id   String @id @default(uuid(7)) @db.Uuid
   name String
   slug String @unique
+
+  owner_id String @db.Uuid
+  owner    User   @relation("SchoolOwner", fields: [owner_id], references: [id])
 
   email   String[]
   phone   String[]
@@ -153,8 +159,8 @@ model Employee {
   user_id String @unique @db.Uuid
   user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
-  school_id String @db.Uuid
-  school    School @relation(fields: [school_id], references: [id], onDelete: Cascade)
+  school_id String? @db.Uuid
+  school    School? @relation(fields: [school_id], references: [id], onDelete: Cascade)
 
   teacher Teacher?
 
@@ -195,7 +201,7 @@ model Student {
 
   class_id String @db.Uuid
   class    Class  @relation(fields: [class_id], references: [id], onDelete: Cascade)
-
+  roll_number      Int?
   academic_year_id String       @db.Uuid
   academic_year    AcademicYear @relation(fields: [academic_year_id], references: [id], onDelete: Cascade)
 

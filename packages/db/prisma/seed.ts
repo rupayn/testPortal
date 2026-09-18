@@ -139,7 +139,7 @@ async function main() {
     data: {
       name: "Greenwood High School",
       slug: "greenwood-high",
-      email: ["contact@greenwoodhigh.edu"],
+      email: ["contact@edorg.edu"],
       phone: ["+911234567890"],
       address: "123 Greenwood Avenue, Springfield",
       status: SchoolStatus.ACTIVE,
@@ -210,7 +210,7 @@ async function main() {
   // ============================================================
   const adminUser = await prismaSingleton.user.create({
     data: {
-      email: "admin@greenwoodhigh.edu",
+      email: "admin@edorg.edu",
       email_verified: true,
       password: hashedPassword,
       name: "Alice Admin",
@@ -232,7 +232,7 @@ async function main() {
 
   const principalUser = await prismaSingleton.user.create({
     data: {
-      email: "principal@greenwoodhigh.edu",
+      email: "principal@edorg.edu",
       email_verified: true,
       password: hashedPassword,
       name: "Peter Principal",
@@ -254,7 +254,7 @@ async function main() {
 
   const teacherUser1 = await prismaSingleton.user.create({
     data: {
-      email: "math.teacher@greenwoodhigh.edu",
+      email: "math.teacher@edorg.edu",
       email_verified: true,
       password: hashedPassword,
       name: "Tara Mathews",
@@ -276,7 +276,7 @@ async function main() {
 
   const teacherUser2 = await prismaSingleton.user.create({
     data: {
-      email: "science.teacher@greenwoodhigh.edu",
+      email: "science.teacher@edorg.edu",
       email_verified: true,
       password: hashedPassword,
       name: "Sam Newton",
@@ -298,7 +298,7 @@ async function main() {
 
   const studentUser1 = await prismaSingleton.user.create({
     data: {
-      email: "student1@greenwoodhigh.edu",
+      email: "student1@edorg.edu",
       email_verified: true,
       password: hashedPassword,
       name: "Sam Student",
@@ -320,7 +320,7 @@ async function main() {
 
   const studentUser2 = await prismaSingleton.user.create({
     data: {
-      email: "student2@greenwoodhigh.edu",
+      email: "student2@edorg.edu",
       email_verified: true,
       password: hashedPassword,
       name: "Riya Student",
@@ -342,7 +342,7 @@ async function main() {
 
   const studentUser3 = await prismaSingleton.user.create({
     data: {
-      email: "student3@greenwoodhigh.edu",
+      email: "student3@edorg.edu",
       email_verified: true,
       password: hashedPassword,
       name: "Jay Student",
@@ -546,6 +546,7 @@ async function main() {
     data: {
       user_id: studentUser1.id,
       class_id: classA.id,
+      roll_number: 1,
       academic_year_id: academicYear.id,
     },
   });
@@ -554,6 +555,7 @@ async function main() {
     data: {
       user_id: studentUser2.id,
       class_id: classA.id,
+      roll_number: 2,
       academic_year_id: academicYear.id,
     },
   });
@@ -562,6 +564,7 @@ async function main() {
     data: {
       user_id: studentUser3.id,
       class_id: classA.id,
+      roll_number: 3,
       academic_year_id: academicYear.id,
     },
   });

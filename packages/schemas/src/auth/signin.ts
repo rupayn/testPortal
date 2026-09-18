@@ -1,23 +1,118 @@
 import { emailSchema, idSchema, passwordSchema, z } from "../zod.ts";
 
+
+
+// ────────────────────────────────
+// Sign In
+// ────────────────────────────────
+
+
 export const signInInputSchema = z.object({
-  email: z
-    .email({ message: "Invalid email address" })
-    .trim()
-    .toLowerCase()
-    .max(254)
-    .min(5)
-    .meta({ examples: ["abcd@a.com"] }),
-  password: z
-    .string()
-    .min(1, { message: "Password is required" })
-    .max(72)
-    .meta({ examples: ["password"] }),
+  email: emailSchema,
+  password: passwordSchema,
+});
+
+
+// Phone
+
+export const phoneTypeSchema = z.enum(["MOBILE", "HOME", "WORK"]);
+
+
+const phoneInputSchema= z.object({
+  country_code: z.string().min(1, "Country code is required"),
+  phone: z.string().min(1, "Phone number is required"),
+  is_primary: z.boolean().default(false),
+  type: phoneTypeSchema.default("MOBILE"),
+});
+
+export const phoneOutputSchema = phoneInputSchema.extend({
+
+  is_verified: z.boolean(),
+
+  created_at: z.coerce.date(),
+  updated_at: z.coerce.date(),
+});
+
+// Base User
+
+const baseUserOutputSchema = z.object({
+  id: z.uuid({version:"v7"}),
+  
+  name: z.string(),
+  email: emailSchema,
+  email_verified: z.boolean(),
+
+  qualification: z.unknown(),
+  dob: z.coerce.date(),
+  gender: z.enum(["MALE", "FEMALE", "OTHER"]),
+
+  phone:z.array(phoneOutputSchema),
+  status: z.enum(["ACTIVE", "INACTIVE", "SUSPENDED", "DELETED"]),
+  
+});
+
+export const baseUserInputSchema=baseUserOutputSchema.omit({
+  id:true,
+  email_verified:true,
+}).extend({
+  password:passwordSchema
+})
+
+const studentUserSchema = baseUserOutputSchema.extend({
+  role: z.literal("STUDENT"),
+  student: z.object({
+    id: z.uuid({version:"v7"}),
+    class_id: z.uuid({ version: "v7" }),
+    academic_year_id: z.uuid({ version: "v7" }),
+    roll_number: z.int().optional(),
+    status: z.enum([
+      "ACTIVE",
+      "GRADUATED",
+      "TRANSFERRED",
+      "INACTIVE",
+    ]),
+    // add only the fields you want to return
+  }),
+});
+
+const teacherUserSchema = baseUserOutputSchema.extend({
+  role: z.literal("TEACHER"),
+  teacher: z.object({
+    id: z.uuid({version:"v7"}),
+    employee_code: z.string(),
+    joining_date: z.coerce.date(),
+    status: z.enum([
+      "ACTIVE",
+      "INACTIVE",
+      "SUSPENDED",
+      "TERMINATED",
+    ]),
+    designation: z.enum([
+      "TEACHER",
+      "ACCOUNTANT",
+      "PRINCIPAL",
+      "ADMIN",
+      "CLERK",
+      "LIBRARIAN",
+      "OTHER",
+    ]),
+    school_id: z.uuid({ version: "v7" }),
+    // add only the fields you want to return
+  }),
+});
+
+const adminUserSchema = baseUserOutputSchema.extend({
+  role: z.literal("ADMIN"),
 });
 
 export const signInOutputSchema = z.object({
   success: z.literal(true),
   message: z.string(),
+  user: z.discriminatedUnion("role", [
+    studentUserSchema,
+    teacherUserSchema,
+    adminUserSchema,
+  ]),
 });
 export const signUpSchema = z.object({
   name: z.string().trim().min(2).max(100),
@@ -25,10 +120,6 @@ export const signUpSchema = z.object({
   password: passwordSchema,
 });
 
-// export const signInSchema = z.object({
-//   email: emailSchema,
-//   password: z.string().min(1, { message: "Password is required" }).max(72),
-// });
 
 // ────────────────────────────────
 // User schemas

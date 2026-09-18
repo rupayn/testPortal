@@ -31,6 +31,9 @@ CREATE TYPE "ExamStatus" AS ENUM ('DRAFT', 'PUBLISHED', 'ONGOING', 'COMPLETED', 
 -- CreateEnum
 CREATE TYPE "SubmissionStatus" AS ENUM ('SUBMITTED', 'GRADED');
 
+-- CreateEnum
+CREATE TYPE "StudentStatus" AS ENUM ('ACTIVE', 'GRADUATED', 'TRANSFERRED', 'INACTIVE');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" UUID NOT NULL,
@@ -86,6 +89,7 @@ CREATE TABLE "School" (
     "id" UUID NOT NULL,
     "name" TEXT NOT NULL,
     "slug" TEXT NOT NULL,
+    "owner_id" UUID NOT NULL,
     "email" TEXT[],
     "phone" TEXT[],
     "address" TEXT NOT NULL,
@@ -118,7 +122,7 @@ CREATE TABLE "Employee" (
     "status" "EmployeeStatus" NOT NULL DEFAULT 'ACTIVE',
     "designation" "Designation" NOT NULL,
     "user_id" UUID NOT NULL,
-    "school_id" UUID NOT NULL,
+    "school_id" UUID,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
@@ -140,7 +144,9 @@ CREATE TABLE "Student" (
     "id" UUID NOT NULL,
     "user_id" UUID NOT NULL,
     "class_id" UUID NOT NULL,
+    "roll_number" INTEGER,
     "academic_year_id" UUID NOT NULL,
+    "status" "StudentStatus" NOT NULL DEFAULT 'ACTIVE',
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
@@ -390,6 +396,9 @@ ALTER TABLE "PhoneNumber" ADD CONSTRAINT "PhoneNumber_user_id_fkey" FOREIGN KEY 
 
 -- AddForeignKey
 ALTER TABLE "Session" ADD CONSTRAINT "Session_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "School" ADD CONSTRAINT "School_owner_id_fkey" FOREIGN KEY ("owner_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "AcademicYear" ADD CONSTRAINT "AcademicYear_school_id_fkey" FOREIGN KEY ("school_id") REFERENCES "School"("id") ON DELETE CASCADE ON UPDATE CASCADE;

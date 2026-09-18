@@ -12,7 +12,8 @@ export const emailSchema = z
   .trim()
   .toLowerCase()
   .max(254)
-  .min(5);
+  .min(5)
+  .meta({ examples: ["student1@edorg.edu"] });
 
 export const passwordSchema = z
   .string()
@@ -20,7 +21,8 @@ export const passwordSchema = z
   .max(72, { message: "Password must be at most 72 characters" })
   .regex(/[a-z]/, { message: "Password must contain a lowercase letter" })
   .regex(/[A-Z]/, { message: "Password must contain an uppercase letter" })
-  .regex(/[0-9]/, { message: "Password must contain a number" });
+  .regex(/[0-9]/, { message: "Password must contain a number" })
+  .meta({ examples: ["Password@1234"] });
 
 export const paginationSchema = z.object({
   page: z.coerce.number().int().positive().default(1),
