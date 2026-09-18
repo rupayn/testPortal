@@ -30,14 +30,13 @@ model User {
 
   qualification Json
 
-  owned_school School[] @relation("SchoolOwner")
-  employee      Employee?
+  role UserRole @default(USER)
+  employee Employee?
 
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
   sessions   Session[]
   student    Student?
-
 }
 
 // ============================================================
@@ -97,8 +96,8 @@ model School {
   name String
   slug String @unique
 
-  owner_id String @db.Uuid
-  owner    User   @relation("SchoolOwner", fields: [owner_id], references: [id])
+  owner_id String  @db.Uuid
+  owner    Teacher @relation("SchoolOwner", fields: [owner_id], references: [id])
 
   email   String[]
   phone   String[]
@@ -177,9 +176,9 @@ model Employee {
 model Teacher {
   id String @id @default(uuid(7)) @db.Uuid
 
-  employee_id String   @unique @db.Uuid
-  employee    Employee @relation(fields: [employee_id], references: [id], onDelete: Cascade)
-
+  employee_id               String                     @unique @db.Uuid
+  employee                  Employee                   @relation(fields: [employee_id], references: [id], onDelete: Cascade)
+  owned_schools             School[]                   @relation("SchoolOwner")
   class_teacher_assignments ClassTeacherAssignment[]
   // Subjects/classes this teacher is assigned to.
   subject_assignments       SubjectTeacherAssignment[]
@@ -199,16 +198,16 @@ model Student {
   user_id String @unique @db.Uuid
   user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
-  class_id String @db.Uuid
-  class    Class  @relation(fields: [class_id], references: [id], onDelete: Cascade)
+  class_id         String       @db.Uuid
+  class            Class        @relation(fields: [class_id], references: [id], onDelete: Cascade)
   roll_number      Int?
   academic_year_id String       @db.Uuid
   academic_year    AcademicYear @relation(fields: [academic_year_id], references: [id], onDelete: Cascade)
 
   status StudentStatus @default(ACTIVE)
 
-  created_at       DateTime         @default(now())
-  updated_at       DateTime         @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   exam_submissions ExamSubmission[]
 }
@@ -523,10 +522,14 @@ enum Designation {
   TEACHER
   ACCOUNTANT
   PRINCIPAL
-  ADMIN
   CLERK
   LIBRARIAN
   OTHER
+}
+
+enum UserRole {
+  USER
+  ADMIN
 }
 
 enum EmployeeStatus {
@@ -568,6 +571,7 @@ enum SubmissionStatus {
   SUBMITTED
   GRADED
 }
+
 enum StudentStatus {
   ACTIVE
   GRADUATED

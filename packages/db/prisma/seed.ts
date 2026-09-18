@@ -4,6 +4,7 @@ import {
   Gender,
   PhoneType,
   UserStatus,
+  UserRole,
   WeekDay,
   Designation,
   EmployeeStatus,
@@ -132,6 +133,65 @@ function time(hhmm: string): Date {
 async function main() {
   logger.info("Seeding database...");
   const hashedPassword = await hashPassword(password);
+
+    const teacherUser1 = await prismaSingleton.user.create({
+    data: {
+      email: "math.teacher@edorg.edu",
+      email_verified: true,
+      password: hashedPassword,
+      name: "Tara Mathews",
+      dob: new Date("1990-02-15"),
+      gender: Gender.FEMALE,
+      status: UserStatus.ACTIVE,
+      qualification: { degree: "M.Sc Mathematics", institution: "Springfield University" },
+      phone: {
+        create: {
+          country_code: "+91",
+          phone: "9000000003",
+          is_primary: true,
+          is_verified: true,
+          type: PhoneType.MOBILE,
+        },
+      },
+    },
+  });
+
+  const teacherEmployee1 = await prismaSingleton.employee.create({
+    data: {
+      employee_code: "EMP-TCH-001",
+      joining_date: new Date("2019-07-01"),
+      status: EmployeeStatus.ACTIVE,
+      designation: Designation.TEACHER,
+      user_id: teacherUser1.id,
+      salary: {
+        create: {
+          current_salary: 55000,
+          initial_salary: 40000,
+          hike: 37.5,
+          bank_name: "HDFC Bank",
+          account_number: "2234567890",
+          ifsc_code: "HDFC0000002",
+          bank_branch: "Springfield East",
+        },
+      },
+      experience: {
+        create: [
+          {
+            organization: "Riverdale School",
+            designation: "Mathematics Teacher",
+            start_date: new Date("2014-06-01"),
+            end_date: new Date("2019-05-31"),
+            description: "Taught middle and high school mathematics.",
+          },
+        ],
+      },
+    },
+  });
+
+  const teacher1 = await prismaSingleton.teacher.create({
+    data: { employee_id: teacherEmployee1.id },
+  });
+
   // ============================================================
   // SCHOOL
   // ============================================================
@@ -143,8 +203,18 @@ async function main() {
       phone: ["+911234567890"],
       address: "123 Greenwood Avenue, Springfield",
       status: SchoolStatus.ACTIVE,
+      owner_id: teacher1.id,
     },
   });
+
+  await prismaSingleton.employee.update({
+  where: {
+    id: teacherEmployee1.id,
+  },
+  data: {
+    school_id: school.id,
+  },
+});
 
   // ============================================================
   // ACADEMIC YEAR
@@ -217,6 +287,7 @@ async function main() {
       dob: new Date("1985-04-12"),
       gender: Gender.FEMALE,
       status: UserStatus.ACTIVE,
+      role: UserRole.ADMIN,
       qualification: { degree: "MBA", institution: "State University" },
       phone: {
         create: {
@@ -252,27 +323,6 @@ async function main() {
     },
   });
 
-  const teacherUser1 = await prismaSingleton.user.create({
-    data: {
-      email: "math.teacher@edorg.edu",
-      email_verified: true,
-      password: hashedPassword,
-      name: "Tara Mathews",
-      dob: new Date("1990-02-15"),
-      gender: Gender.FEMALE,
-      status: UserStatus.ACTIVE,
-      qualification: { degree: "M.Sc Mathematics", institution: "Springfield University" },
-      phone: {
-        create: {
-          country_code: "+91",
-          phone: "9000000003",
-          is_primary: true,
-          is_verified: true,
-          type: PhoneType.MOBILE,
-        },
-      },
-    },
-  });
 
   const teacherUser2 = await prismaSingleton.user.create({
     data: {
@@ -365,28 +415,7 @@ async function main() {
   // ============================================================
   // EMPLOYEES + SALARY
   // ============================================================
-  const adminEmployee = await prismaSingleton.employee.create({
-    data: {
-      employee_code: "EMP-ADMIN-001",
-      joining_date: new Date("2020-01-15"),
-      status: EmployeeStatus.ACTIVE,
-      designation: Designation.ADMIN,
-      user_id: adminUser.id,
-      school_id: school.id,
-      salary: {
-        create: {
-          current_salary: 45000,
-          initial_salary: 35000,
-          hike: 28.5,
-          bank_name: "State Bank",
-          account_number: "1234567890",
-          ifsc_code: "SBIN0000001",
-          bank_branch: "Springfield Main",
-        },
-      },
-    },
-  });
-
+ 
   const principalEmployee = await prismaSingleton.employee.create({
     data: {
       employee_code: "EMP-PRIN-001",
@@ -409,38 +438,7 @@ async function main() {
     },
   });
 
-  const teacherEmployee1 = await prismaSingleton.employee.create({
-    data: {
-      employee_code: "EMP-TCH-001",
-      joining_date: new Date("2019-07-01"),
-      status: EmployeeStatus.ACTIVE,
-      designation: Designation.TEACHER,
-      user_id: teacherUser1.id,
-      school_id: school.id,
-      salary: {
-        create: {
-          current_salary: 55000,
-          initial_salary: 40000,
-          hike: 37.5,
-          bank_name: "HDFC Bank",
-          account_number: "2234567890",
-          ifsc_code: "HDFC0000002",
-          bank_branch: "Springfield East",
-        },
-      },
-      experience: {
-        create: [
-          {
-            organization: "Riverdale School",
-            designation: "Mathematics Teacher",
-            start_date: new Date("2014-06-01"),
-            end_date: new Date("2019-05-31"),
-            description: "Taught middle and high school mathematics.",
-          },
-        ],
-      },
-    },
-  });
+  
 
   const teacherEmployee2 = await prismaSingleton.employee.create({
     data: {
@@ -467,9 +465,7 @@ async function main() {
   // ============================================================
   // TEACHER RECORDS
   // ============================================================
-  const teacher1 = await prismaSingleton.teacher.create({
-    data: { employee_id: teacherEmployee1.id },
-  });
+  
 
   const teacher2 = await prismaSingleton.teacher.create({
     data: { employee_id: teacherEmployee2.id },
