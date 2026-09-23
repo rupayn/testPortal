@@ -10,6 +10,9 @@ import {
 export const signinRoute = createRoute({
   method: "post",
   path: "/auth/signin",
+  tags: ["Authentication"],
+  summary: "Sign in",
+  description: "Authenticate a user using email and password.",
   request: {
     body: {
       content: {

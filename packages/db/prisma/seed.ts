@@ -639,7 +639,79 @@ async function main() {
       user_id: adminUser.id,
       device_token: "seed-device-token",
       ip_address: "127.0.0.1",
-      refresh_token: "seed-refresh-token-admin",
+      refresh_token: crypto.randomUUID(),
+      user_agent: "seed-script/1.0",
+      provider: AuthProvider.EMAIL,
+      is_active: true,
+      expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+    },
+  });
+  await prismaSingleton.session.create({
+    data: {
+      user_id: principalUser.id,
+      device_token: "seed-device-token",
+      ip_address: "127.0.0.1",
+      refresh_token: crypto.randomUUID(),
+      user_agent: "seed-script/1.0",
+      provider: AuthProvider.EMAIL,
+      is_active: true,
+      expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+    },
+  });
+  await prismaSingleton.session.create({
+    data: {
+      user_id: teacherUser2.id,
+      device_token: "seed-device-token",
+      ip_address: "127.0.0.1",
+      refresh_token: crypto.randomUUID(),
+      user_agent: "seed-script/1.0",
+      provider: AuthProvider.EMAIL,
+      is_active: true,
+      expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+    },
+  });
+  await prismaSingleton.session.create({
+    data: {
+      user_id: teacherUser1.id,
+      device_token: "seed-device-token",
+      ip_address: "127.0.0.1",
+      refresh_token: crypto.randomUUID(),
+      user_agent: "seed-script/1.0",
+      provider: AuthProvider.EMAIL,
+      is_active: true,
+      expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+    },
+  });
+  await prismaSingleton.session.create({
+    data: {
+      user_id: studentUser1.id,
+      device_token: "seed-device-token",
+      ip_address: "127.0.0.1",
+      refresh_token: crypto.randomUUID(),
+      user_agent: "seed-script/1.0",
+      provider: AuthProvider.EMAIL,
+      is_active: true,
+      expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+    },
+  });
+  await prismaSingleton.session.create({
+    data: {
+      user_id: studentUser2.id,
+      device_token: "seed-device-token",
+      ip_address: "127.0.0.1",
+      refresh_token: crypto.randomUUID(),
+      user_agent: "seed-script/1.0",
+      provider: AuthProvider.EMAIL,
+      is_active: true,
+      expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+    },
+  });
+  await prismaSingleton.session.create({
+    data: {
+      user_id: studentUser3.id,
+      device_token: "seed-device-token",
+      ip_address: "127.0.0.1",
+      refresh_token: crypto.randomUUID(),
       user_agent: "seed-script/1.0",
       provider: AuthProvider.EMAIL,
       is_active: true,
