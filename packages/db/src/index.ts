@@ -1,6 +1,7 @@
 import "dotenv/config";
 import { PrismaClient } from "../generated/prisma/client.js";
 import { PrismaPg } from "@prisma/adapter-pg";
+import type { Prisma } from "../generated/prisma/client.js";
 
 type LogLevel = "query" | "error" | "warn" | "info";
 class myPrismaClient {
@@ -24,3 +25,16 @@ class myPrismaClient {
 }
 
 export const prismaSingleton = myPrismaClient.getInstance().client;
+export type SigninUserType = Prisma.UserGetPayload<{
+  include: {
+    phone: true;
+    student: true;
+    employee: {
+      include: {
+        teacher: true;
+      };
+    };
+    session: true;
+  };
+}>;
+export type SessionType = Omit<Prisma.SessionCreateInput, "user_id">;

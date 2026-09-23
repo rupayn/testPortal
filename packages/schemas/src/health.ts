@@ -8,3 +8,5 @@ export const healthResponseSchema = z.object({
   message: z.string(),
   data: healthDataSchema,
 });
+
+export type HealthResponse = z.infer<typeof healthResponseSchema>;

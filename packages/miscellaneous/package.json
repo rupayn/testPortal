@@ -1,0 +1,16 @@
+{
+  "name": "@repo/miscellaneous",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "exports":{
+    "./backend":"./backend.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "bcryptjs": "^3.0.3"
+  }
+}

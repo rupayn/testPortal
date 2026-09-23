@@ -34,9 +34,11 @@ services:
     restart: unless-stopped
     networks:
       - testportal-network
-    # depends_on:
-    #   db:
-    #     condition: service_healthy
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
   # -------------------------------------------------------
   # Uncomment once packages/db is added and needs a real
@@ -56,6 +58,23 @@ services:
       - db-data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - testportal-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: testportal-redis-dev
+    restart: unless-stopped
+    ports:
+      - "6379:6379"             # host:container — change host port if 6379 is taken
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes   # enable AOF persistence so cache survives restarts
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
       interval: 5s
       timeout: 3s
       retries: 5
@@ -82,3 +101,4 @@ networks:
 
 volumes:
   db-data:
+  redis-data:

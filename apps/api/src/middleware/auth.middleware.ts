@@ -1,0 +1,42 @@
+import { createMiddleware } from "hono/factory";
+import { getCookie } from "hono/cookie";
+import type { Context } from "hono";
+import { verifyJwtToken } from "../utils/jwt";
+import { envs } from "../config/dotenv";
+
+export const authMiddleware = createMiddleware(async (c: Context, next) => {
+  let token: string | undefined;
+  const authorization = c.req.header("Authorization");
+  if (authorization?.startsWith("Bearer ") === true) {
+    token = authorization.slice(7);
+  }
+
+  token = token ?? getCookie(c, "access_token");
+  if (token === undefined) {
+    return c.json(
+      {
+        success: false,
+        message: "Authentication required",
+      },
+      401
+    );
+  }
+  try {
+    const payload = await verifyJwtToken(token, envs.JWT_ACCESS_SECRET);
+
+    c.set("auth", {
+      userId: payload.sub as string,
+      sessionId: payload.sessionId as string,
+    });
+
+    await next();
+  } catch {
+    return c.json(
+      {
+        success: false,
+        message: "Invalid or expired access token",
+      },
+      401
+    );
+  }
+});

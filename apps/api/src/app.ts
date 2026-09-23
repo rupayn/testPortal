@@ -1,6 +1,6 @@
 import { envs } from "./config/dotenv";
 import { OpenAPIHono } from "@hono/zod-openapi";
-import route from "./routes/index";
+import route from "./modules/index";
 import { httpLogger, logger } from "@repo/logger/config";
 import { globalErrorHandler } from "./utils/globalErrorHandler";
 import { notFoundHandler } from "./utils/notFoundHandler";
@@ -62,7 +62,6 @@ const app = new OpenAPIHono({
 app.use("*", cors());
 
 if (envs.NODE_ENV !== "production") {
-  logger.warn("Running in development mode");
   app.use(httpLogger);
 }
 
