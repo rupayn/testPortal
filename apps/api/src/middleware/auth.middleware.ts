@@ -1,7 +1,8 @@
 import { createMiddleware } from "hono/factory";
 import { getCookie } from "hono/cookie";
 import type { Context } from "hono";
-import { verifyAccessToken } from "../utils/jwt";
+import { verifyJwtToken } from "../utils/jwt";
+import { envs } from "../config/dotenv";
 
 export const authMiddleware = createMiddleware(async (c: Context, next) => {
   let token: string | undefined;
@@ -21,7 +22,7 @@ export const authMiddleware = createMiddleware(async (c: Context, next) => {
     );
   }
   try {
-    const payload = await verifyAccessToken(token);
+    const payload = await verifyJwtToken(token, envs.JWT_ACCESS_SECRET);
 
     c.set("auth", {
       userId: payload.sub as string,

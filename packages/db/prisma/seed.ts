@@ -134,7 +134,7 @@ async function main() {
   logger.info("Seeding database...");
   const hashedPassword = await hashPassword(password);
 
-    const teacherUser1 = await prismaSingleton.user.create({
+  const teacherUser1 = await prismaSingleton.user.create({
     data: {
       email: "math.teacher@edorg.edu",
       email_verified: true,
@@ -208,13 +208,13 @@ async function main() {
   });
 
   await prismaSingleton.employee.update({
-  where: {
-    id: teacherEmployee1.id,
-  },
-  data: {
-    school_id: school.id,
-  },
-});
+    where: {
+      id: teacherEmployee1.id,
+    },
+    data: {
+      school_id: school.id,
+    },
+  });
 
   // ============================================================
   // ACADEMIC YEAR
@@ -323,7 +323,6 @@ async function main() {
     },
   });
 
-
   const teacherUser2 = await prismaSingleton.user.create({
     data: {
       email: "science.teacher@edorg.edu",
@@ -415,7 +414,7 @@ async function main() {
   // ============================================================
   // EMPLOYEES + SALARY
   // ============================================================
- 
+
   const principalEmployee = await prismaSingleton.employee.create({
     data: {
       employee_code: "EMP-PRIN-001",
@@ -437,8 +436,6 @@ async function main() {
       },
     },
   });
-
-  
 
   const teacherEmployee2 = await prismaSingleton.employee.create({
     data: {
@@ -465,7 +462,6 @@ async function main() {
   // ============================================================
   // TEACHER RECORDS
   // ============================================================
-  
 
   const teacher2 = await prismaSingleton.teacher.create({
     data: { employee_id: teacherEmployee2.id },

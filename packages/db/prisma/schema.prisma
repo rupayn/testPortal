@@ -30,12 +30,12 @@ model User {
 
   qualification Json
 
-  role UserRole @default(USER)
+  role     UserRole  @default(USER)
   employee Employee?
 
-  created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
-  sessions   Session[]
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  session    Session?
   student    Student?
 }
 
@@ -64,11 +64,11 @@ model PhoneNumber {
 
 // ============================================================
 // SESSIONS
-// ============================================================
+// ============================================If your verifyPassword() is async—which it normall================
 model Session {
   id String @id @default(uuid(7)) @db.Uuid
 
-  user_id String @db.Uuid
+  user_id String @unique @db.Uuid
   user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   device_token  String?

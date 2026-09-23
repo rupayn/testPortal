@@ -1,18 +1,19 @@
 import { describe, expect, it } from "vitest";
 import app from "../../src/app";
+import { signInOutputSchema } from "@repo/schemas";
 // student
 describe("POST /auth/signin checking for signin functionality", () => {
   it("should signin with valid credentials checking for 200 status", async () => {
     const response = await app.request("/api/auth/signin", {
       method: "POST",
       body: JSON.stringify({
-        email: "test@test.com",
+        email: "student1@edorg.edu",
         password: "Password@1234",
       }),
     });
     expect(response.status).toBe(200);
 
-    const data = await response.json();
+    const data = signInOutputSchema.parse(await response.json());
 
     expect(data).toEqual({
       success: true,

@@ -1,16 +1,33 @@
-import { verify, sign } from "hono/jwt";
-import { envs } from "../config/dotenv";
+import { sign, verify } from "hono/jwt";
 
-export const signAccessToken = async (userId: string, sessionId: string) => {
+type TokenType = "access" | "refresh";
+type ExpiresIn = "15m" | "7d";
+
+const EXPIRATION_TIME: Record<ExpiresIn, number> = {
+  "15m": 15 * 60,
+  "7d": 7 * 24 * 60 * 60,
+};
+
+export const signToken = async (
+  userId: string,
+  sessionId: string,
+  secret: string,
+  type: TokenType,
+  expiresIn: ExpiresIn
+) => {
+  const now = Math.floor(Date.now() / 1000);
+
   const payload = {
     sub: userId,
     sessionId,
-    type: "access" as const,
+    type,
+    iat: now,
+    exp: now + EXPIRATION_TIME[expiresIn],
   };
 
-  return sign(payload, envs.JWT_SECRET, "HS256");
+  return sign(payload, secret, "HS256");
 };
 
-export const verifyAccessToken = async (token: string) => {
-  return verify(token, envs.JWT_SECRET, "HS256");
+export const verifyJwtToken = async (token: string, secret: string) => {
+  return verify(token, secret, "HS256");
 };
