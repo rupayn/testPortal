@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
-import app from "../src/app";
+import app from "../../src/app";
 import { healthResponseSchema } from "@repo/schemas";
 describe("GET /api/health​ checking health", () => {
   it("should return 200 status", async () => {
-    const response = await app.request("/api/health", {
+    const response = await app.request("/api/v1/health", {
       method: "GET",
     });
     const body = healthResponseSchema.parse(await response.json());

@@ -1,7 +1,7 @@
 import "dotenv/config";
 import { PrismaClient } from "../generated/prisma/client.js";
 import { PrismaPg } from "@prisma/adapter-pg";
-import type { Prisma } from "../generated/prisma/client.js";
+import { Prisma } from "../generated/prisma/client.js";
 
 type LogLevel = "query" | "error" | "warn" | "info";
 class myPrismaClient {
@@ -38,3 +38,4 @@ export type SigninUserType = Prisma.UserGetPayload<{
   };
 }>;
 export type SessionType = Omit<Prisma.SessionCreateInput, "user_id">;
+export type { PrismaClient, Prisma } from "../generated/prisma/client.js";

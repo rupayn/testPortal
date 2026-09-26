@@ -11,6 +11,7 @@ import { swaggerUI } from "@hono/swagger-ui";
 import { Scalar } from "@scalar/hono-api-reference";
 import { ErrorCodeEnums } from "@repo/schemas";
 import { cors } from "hono/cors";
+import { compress } from "hono-compress";
 
 const app = new OpenAPIHono({
   defaultHook: (result, c) => {
@@ -60,6 +61,7 @@ const app = new OpenAPIHono({
 });
 
 app.use("*", cors());
+app.use("*", compress());
 
 if (envs.NODE_ENV !== "production") {
   app.use(httpLogger);
