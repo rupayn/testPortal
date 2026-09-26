@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
-import { r2Client } from "../config/r2";
-import { envs } from "../config/dotenv";
+import { r2Client } from "@/config/r2";
+import { envs } from "@/config/dotenv";
 import { logger } from "@repo/logger/config";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { Readable } from "stream";

@@ -1,10 +1,10 @@
 import type { Context } from "hono";
 import { HTTPException } from "hono/http-exception";
-import { ApiError } from "./apiError";
-import { errorResponse } from "./apiResponse";
+import { ApiError } from "@/utils/apiError";
+import { errorResponse } from "@/utils/apiResponse";
 import { logger } from "@repo/logger/config";
 import { ZodError } from "zod";
-import type { ErrorStatusCode } from "./apiError";
+import type { ErrorStatusCode } from "@/utils/apiError";
 import { ErrorCodeEnums } from "@repo/schemas";
 
 const isErrorStatusCode = (status: number): status is ErrorStatusCode => {

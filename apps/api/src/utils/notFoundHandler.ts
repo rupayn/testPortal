@@ -1,6 +1,6 @@
 import type { Context } from "hono";
 import { logger } from "@repo/logger/config";
-import { envs } from "../config/dotenv";
+import { envs } from "@/config/dotenv";
 
 export const notFoundHandler = (c: Context) => {
   if (envs.NODE_ENV !== "production")

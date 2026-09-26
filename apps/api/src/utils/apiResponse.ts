@@ -1,5 +1,5 @@
 import type { Context } from "hono";
-import type { ErrorStatusCode } from "./apiError";
+import type { ErrorStatusCode } from "@/utils/apiError";
 import type { ErrorCode } from "@repo/schemas";
 
 type JsonSuccessStatusCode = 200 | 201 | 202;

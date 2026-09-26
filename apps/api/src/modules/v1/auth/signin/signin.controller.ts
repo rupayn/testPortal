@@ -1,15 +1,15 @@
-import { ApiError } from "../../../../utils/apiError";
+import { ApiError } from "@/utils/apiError";
 import { ErrorCodeEnums } from "@repo/schemas";
-import { successResponse } from "../../../../utils/apiResponse";
+import { successResponse } from "@/utils/apiResponse";
 import type { RouteHandler } from "@hono/zod-openapi";
-import type { signinRoute } from "./signin.route";
+import type { signinRoute } from "@/modules/v1/auth/signin/signin.route";
 import { logger } from "@repo/logger/config";
 import { hashPassword, verifyPassword } from "@repo/miscellaneous/backend";
-import { signToken } from "../../../../utils/jwt";
-import { envs } from "../../../../config/dotenv";
+import { signToken } from "@/utils/jwt";
+import { envs } from "@/config/dotenv";
 import { setCookie } from "hono/cookie";
-import { getUser } from "../../../../utils/db/user";
-import { updateSession } from "../../../../utils/db/session";
+import { getUser } from "@/utils/db/user";
+import { updateSession } from "@/utils/db/session";
 
 export const signinController: RouteHandler<typeof signinRoute> = async (c) => {
   const { email, password } = c.req.valid("json");

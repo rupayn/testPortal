@@ -1,11 +1,11 @@
 import "dotenv/config";
-import { envs } from "./config/dotenv";
+import { envs } from "@/config/dotenv";
 import { serve } from "@hono/node-server";
 
-import app from "./app";
+import app from "@/app";
 import { logger } from "@repo/logger/config";
-import { ensureGeoLiteDatabase } from "./utils/geoip";
-import { initializeGeoIp } from "./services/geoip/geoip";
+import { ensureGeoLiteDatabase } from "@/utils/geoip";
+import { initializeGeoIp } from "@/services/geoip/geoip";
 
 async function startServer() {
   try {

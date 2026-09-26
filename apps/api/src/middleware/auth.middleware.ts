@@ -1,8 +1,8 @@
 import { createMiddleware } from "hono/factory";
 import { getCookie } from "hono/cookie";
 import type { Context } from "hono";
-import { verifyJwtToken } from "../utils/jwt";
-import { envs } from "../config/dotenv";
+import { verifyJwtToken } from "@/utils/jwt";
+import { envs } from "@/config/dotenv";
 
 export const authMiddleware = createMiddleware(async (c: Context, next) => {
   let token: string | undefined;
