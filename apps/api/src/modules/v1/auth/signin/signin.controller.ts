@@ -3,7 +3,6 @@ import { ErrorCodeEnums } from "@repo/schemas";
 import { successResponse } from "@/utils/apiResponse";
 import type { RouteHandler } from "@hono/zod-openapi";
 import type { signinRoute } from "@/modules/v1/auth/signin/signin.route";
-import { logger } from "@repo/logger/config";
 import { hashPassword, verifyPassword } from "@repo/miscellaneous/backend";
 import { signToken } from "@/utils/jwt";
 import { envs } from "@/config/dotenv";
@@ -15,7 +14,6 @@ export const signinController: RouteHandler<typeof signinRoute> = async (c) => {
   const { email, password } = c.req.valid("json");
 
   const user = await getUser("signin", email);
-  logger.debug(user);
 
   if (user == null) {
     throw new ApiError(401, "Invalid credentials", ErrorCodeEnums.USER_NOT_FOUND);
