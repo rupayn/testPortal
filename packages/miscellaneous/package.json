@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "exports":{
-    "./backend":"./backend.ts"
+    "./backend":"./backend.ts",
+    "./js_utils":"./js_utils.ts"
   },
   "keywords": [],
   "author": "",
@@ -12,5 +13,8 @@
   "type": "module",
   "dependencies": {
     "bcryptjs": "^3.0.3"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:^"
   }
 }
