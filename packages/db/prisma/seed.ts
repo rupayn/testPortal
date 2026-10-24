@@ -141,6 +141,8 @@ async function main() {
       password: hashedPassword,
       name: "Tara Mathews",
       dob: new Date("1990-02-15"),
+      avatar: "https://www.w3schools.com/w3images/avatar1.png",
+      avatar_id: "0199a111-1111-7111-8111-111111111111",
       gender: Gender.FEMALE,
       status: UserStatus.ACTIVE,
       qualification: { degree: "M.Sc Mathematics", institution: "Springfield University" },
@@ -163,6 +165,7 @@ async function main() {
       status: EmployeeStatus.ACTIVE,
       designation: Designation.TEACHER,
       user_id: teacherUser1.id,
+
       salary: {
         create: {
           current_salary: 55000,
@@ -285,6 +288,8 @@ async function main() {
       password: hashedPassword,
       name: "Alice Admin",
       dob: new Date("1985-04-12"),
+      avatar: "https://www.w3schools.com/w3images/avatar2.png",
+      avatar_id:"111111111111111111111",
       gender: Gender.FEMALE,
       status: UserStatus.ACTIVE,
       role: UserRole.ADMIN,
@@ -310,6 +315,8 @@ async function main() {
       dob: new Date("1975-09-23"),
       gender: Gender.MALE,
       status: UserStatus.ACTIVE,
+      avatar: "https://www.w3schools.com/w3images/avatar3.png",
+      avatar_id:"111111111111111111112",
       qualification: { degree: "PhD Education", institution: "Springfield University" },
       phone: {
         create: {
@@ -331,6 +338,8 @@ async function main() {
       name: "Sam Newton",
       dob: new Date("1988-11-05"),
       gender: Gender.MALE,
+      avatar: "https://www.w3schools.com/w3images/avatar4.png",
+      avatar_id:"111111111111111111113",
       status: UserStatus.ACTIVE,
       qualification: { degree: "M.Sc Physics", institution: "State University" },
       phone: {
@@ -351,6 +360,8 @@ async function main() {
       email_verified: true,
       password: hashedPassword,
       name: "Sam Student",
+      avatar: "https://www.w3schools.com/w3images/avatar5.png",
+      avatar_id:"111111111111111111114",
       dob: new Date("2010-06-20"),
       gender: Gender.MALE,
       status: UserStatus.ACTIVE,
@@ -374,6 +385,8 @@ async function main() {
       password: hashedPassword,
       name: "Riya Student",
       dob: new Date("2010-09-11"),
+      avatar: "https://www.w3schools.com/w3images/avatar6.png",
+      avatar_id:"111111111111111111115",
       gender: Gender.FEMALE,
       status: UserStatus.ACTIVE,
       qualification: {},
@@ -397,6 +410,8 @@ async function main() {
       name: "Jay Student",
       dob: new Date("2010-01-30"),
       gender: Gender.MALE,
+      avatar:"https://www.w3schools.com/w3images/avatar7.png",
+      avatar_id:"111111111111111111116",
       status: UserStatus.ACTIVE,
       qualification: {},
       phone: {

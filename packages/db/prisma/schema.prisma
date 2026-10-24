@@ -24,6 +24,9 @@ model User {
   name           String
   dob            DateTime @db.Date
 
+  avatar         String?
+  avatar_id      String?
+
   gender Gender
   phone  PhoneNumber[]
   status UserStatus    @default(ACTIVE)
@@ -64,7 +67,7 @@ model PhoneNumber {
 
 // ============================================================
 // SESSIONS
-// ============================================If your verifyPassword() is async—which it normall================
+// ============================================If your verifyPassword() is async—which it normal================
 model Session {
   id String @id @default(uuid(7)) @db.Uuid
 

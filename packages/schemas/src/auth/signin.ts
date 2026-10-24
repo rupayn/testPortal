@@ -35,6 +35,8 @@ const baseUserOutputSchema = z.object({
   name: z.string(),
   email: emailSchema,
   email_verified: z.boolean(),
+  avatar: z.string().optional(),
+  avatar_id: z.string().optional(),
 
   qualification: z.unknown(),
   dob: z.coerce.date(),

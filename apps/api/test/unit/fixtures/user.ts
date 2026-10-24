@@ -22,6 +22,8 @@ const baseUser: SigninUserType = {
   email_verified: true,
   password: "dummy-password",
   name: "Base User",
+  avatar_id: "0199base1-0000-7000-8000-000000000001",
+  avatar: "https://www.w3schools.com/w3images/avatar1.png",
 
   dob: new Date("1990-01-01"),
   gender: "MALE",
